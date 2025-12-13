@@ -14,7 +14,7 @@ interface CardProps {
 
 export function Card({ id, title, category, price, image, colorCount, badge, href }: CardProps) {
   const cardContent = (
-    <article className="group flex flex-col overflow-hidden rounded-lg">
+    <article className="group flex flex-col overflow-hidden rounded-lg hover:ring ring-dark-500">
       {/* Image Section */}
       <div className="relative aspect-square bg-light-200">
         {/* Badge */}
@@ -25,12 +25,12 @@ export function Card({ id, title, category, price, image, colorCount, badge, hre
         )}
 
         {/* Product Image */}
-        <div className="relative h-full w-full">
+        <div className="relative h-full w-full overflow-hidden">
           <Image
             src={image}
             alt={title}
             fill
-            className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-300 group-hover:scale-105 "
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         </div>

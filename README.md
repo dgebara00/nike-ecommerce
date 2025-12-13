@@ -1,10 +1,10 @@
 ## Nike E-Commerce Accelerator
 
-Next.js 14 storefront showcasing a Nike footwear catalog backed by Neon + Drizzle ORM, Better Auth, Tailwind CSS 4, and Zustand client-side filters.
+Next.js 16 storefront showcasing a Nike footwear catalog backed by Neon + Drizzle ORM, Better Auth, Tailwind CSS 4, and Zustand client-side filters.
 
 ### Stack
 
-- Next.js 14 App Router, TypeScript, React 19
+- Next.js 16 App Router, TypeScript, React 19
 - Tailwind CSS v4 styles with custom gradients
 - Drizzle ORM + Neon serverless Postgres driver
 - Better Auth + Drizzle adapter for password auth endpoints (`/api/auth/[...better-auth]`)

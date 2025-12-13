@@ -37,11 +37,11 @@ export function Card({ id, title, category, price, image, colorCount, badge, hre
       </div>
 
       {/* Info Section */}
-      <div className="flex flex-col gap-1 bg-dark-900 px-4 py-4">
+      <div className="flex flex-col gap-1 bg-transparent px-4 py-4">
         {/* Title and Price Row */}
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="text-body font-body-medium text-light-100">{title}</h3>
-          <span className="flex-shrink-0 text-body font-body text-light-100">
+        <div className="flex items-start justify-between gap-2 font-medium">
+          <h3 className="text-dark-900">{title}</h3>
+          <span className="flex-shrink-0 text-dark-900">
             ${price.toFixed(2)}
           </span>
         </div>
@@ -51,7 +51,7 @@ export function Card({ id, title, category, price, image, colorCount, badge, hre
 
         {/* Color Count */}
         {colorCount && colorCount > 0 && (
-          <p className="text-caption font-caption text-orange">{colorCount} Colour</p>
+          <p className="text-caption font-caption text-dark-700">{colorCount} Colour</p>
         )}
       </div>
     </article>

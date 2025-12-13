@@ -13,7 +13,7 @@ function NavLink({ href, children }: NavLinkProps) {
   return (
     <Link
       href={href}
-      className="text-body font-body text-dark-900 transition-colors hover:text-dark-700"
+      className="text-dark-900 transition-colors hover:text-dark-700"
     >
       {children}
     </Link>
@@ -35,7 +35,7 @@ export function Navbar() {
   return (
     <header className="w-full bg-light-100">
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+        className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8 font-medium"
         aria-label="Main navigation"
       >
         {/* Logo */}
@@ -45,7 +45,7 @@ export function Navbar() {
             alt="Nike"
             width={60}
             height={22}
-            className="h-[22px] w-auto"
+            className="h-[22px] w-auto filter brightness-0"
             priority
           />
         </Link>
@@ -63,13 +63,13 @@ export function Navbar() {
         <div className="flex items-center gap-6">
           <Link
             href="/search"
-            className="hidden text-body font-body text-dark-900 transition-colors hover:text-dark-700 sm:block"
+            className="hidden text-dark-900 transition-colors hover:text-dark-700 sm:block"
           >
             Search
           </Link>
           <Link
             href="/cart"
-            className="text-body font-body text-dark-900 transition-colors hover:text-dark-700"
+            className="text-dark-900 transition-colors hover:text-dark-700"
           >
             My Cart ({cartCount})
           </Link>
@@ -122,7 +122,7 @@ export function Navbar() {
               <li key={link.href} role="none">
                 <Link
                   href={link.href}
-                  className="block py-2 text-body font-body text-dark-900 transition-colors hover:text-dark-700"
+                  className="block py-2 text-dark-900 transition-colors hover:text-dark-700"
                   role="menuitem"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -133,7 +133,7 @@ export function Navbar() {
             <li role="none" className="pt-2">
               <Link
                 href="/search"
-                className="block py-2 text-body font-body text-dark-900 transition-colors hover:text-dark-700"
+                className="block py-2 text-dark-900 transition-colors hover:text-dark-700"
                 role="menuitem"
                 onClick={() => setIsMobileMenuOpen(false)}
               >

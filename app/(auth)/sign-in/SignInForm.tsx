@@ -1,22 +1,30 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Chrome, Apple } from "lucide-react";
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 
-import { signInAction, type SignInState } from "./actions";
+import { signIn, type AuthActionState } from "@/lib/auth/actions";
 
-const initialState: SignInState = {
+const initialState: AuthActionState = {
   success: false,
 };
 
 export default function SignInForm() {
+  const router = useRouter()
   const [state, formAction, isPending] = useActionState(
-    signInAction,
+    signIn,
     initialState
   );
+
+  useEffect(() => {
+    if (state.success) {
+      router.push('/');
+    }
+  }, [router, state.success]);
 
   return (
     <div className="flex flex-col gap-6">

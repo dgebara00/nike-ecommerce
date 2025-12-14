@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, uuidv4 } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 
@@ -9,19 +9,38 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 const authSecret = process.env.BETTER_AUTH_SECRET ?? "dev-secret";
 
 export const auth = betterAuth({
-  app: {
-    name: "Nike Commerce Cloud",
-    url: appUrl,
-  },
+  appName: "Nike Commerce Cloud",
+  baseURL: appUrl,
   secret: authSecret,
+
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
   }),
   session: {
-    cookie: {
-      name: "nike_session",
-      secure: process.env.NODE_ENV === "production",
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 24,
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5,
+    },
+  },
+  advanced: {
+    cookiePrefix: "nike",
+    database: {
+      generateId: 'uuid'
+    },
+    cookies: {
+      session_token: {
+        name: "auth_session",
+        options: {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          path: "/",
+          maxAge: 60 * 60 * 24 * 7,
+        },
+      },
     },
   },
   emailAndPassword: {
@@ -29,4 +48,4 @@ export const auth = betterAuth({
     autoSignIn: true,
   },
   plugins: [nextCookies()],
-} as Parameters<typeof betterAuth>[0]);
+});

@@ -1,22 +1,31 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Chrome, Apple } from "lucide-react";
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 
-import { signUpAction, type SignUpState } from "./actions";
+import { signUp, type AuthActionState } from "@/lib/auth/actions";
 
-const initialState: SignUpState = {
+
+const initialState: AuthActionState = {
   success: false,
 };
 
 export default function SignUpForm() {
+  const router = useRouter()
   const [state, formAction, isPending] = useActionState(
-    signUpAction,
+    signUp,
     initialState
   );
+
+  useEffect(() => {
+    if (state.success) {
+      router.push('/');
+    }
+  }, [router, state.success]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -41,11 +50,11 @@ export default function SignUpForm() {
 
       <form action={formAction} className="flex flex-col gap-4">
         <Input
-          name="fullName"
-          label="Full Name"
-          placeholder="Enter your full name"
+          name="name"
+          label="Name"
+          placeholder="Enter your name"
           autoComplete="name"
-          error={state.fieldErrors?.fullName?.[0]}
+          error={state.fieldErrors?.name?.[0]}
         />
         <Input
           name="email"

@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import { db } from "../db";
-import { products } from "../db/schema";
+import { products } from "../lib/db/schema";
 
 const nikeProducts = [
   {

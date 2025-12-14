@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import type { Product } from "@/db/schema";
+import type { Product } from "@/lib/db/schema";
 
 export async function getProducts(): Promise<Product[]> {
   try {

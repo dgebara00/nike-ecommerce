@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Chrome, Apple } from "lucide-react";
 
 import Button from "@/components/Button";
@@ -13,10 +14,21 @@ const initialState: SignUpState = {
 };
 
 export default function SignUpForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
+
   const [state, formAction, isPending] = useActionState(
     signUpAction,
     initialState
   );
+
+  useEffect(() => {
+    if (state.success) {
+      router.push(state.redirectTo || redirectTo);
+      router.refresh();
+    }
+  }, [state.success, state.redirectTo, redirectTo, router]);
 
   return (
     <div className="flex flex-col gap-6">

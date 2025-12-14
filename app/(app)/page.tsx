@@ -1,9 +1,11 @@
 import { getProducts } from "@/lib/products";
 import Card from "@/components/Card";
 
-export const dynamic = "force-dynamic";
+import { getSession } from "@/lib/auth/actions";
 
 export default async function Home() {
+  const session = await getSession()
+  console.log("🚀 ~ Home ~ session:", session)
   const products = await getProducts();
 
   return (
@@ -17,8 +19,8 @@ export default async function Home() {
 
               return (
                 <Card
-                  key={product.id ?? product.slug}
-                  id={product.id}
+                  key={ product.slug}
+                  id={product.slug}
                   title={product.name}
                   category={product.category}
                   price={Number.isNaN(priceValue) ? 0 : priceValue}

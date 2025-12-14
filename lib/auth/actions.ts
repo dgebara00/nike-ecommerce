@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { guest } from "@/lib/db/schema";
+import { guest } from "@/db/schema";
 import {
   signUpSchema,
   signInSchema,
@@ -21,7 +21,6 @@ export interface AuthActionState {
   success: boolean;
   error?: string;
   fieldErrors?: Record<string, string[]>;
-  redirectTo?: string;
 }
 
 export async function signUp(
@@ -29,7 +28,7 @@ export async function signUp(
   formData: FormData
 ): Promise<AuthActionState> {
   const rawData = {
-    fullName: formData.get("fullName"),
+    name: formData.get("name"),
     email: formData.get("email"),
     password: formData.get("password"),
   };
@@ -49,7 +48,7 @@ export async function signUp(
   try {
     const response = await auth.api.signUpEmail({
       body: {
-        name: validatedData.fullName,
+        name: validatedData.name,
         email: validatedData.email,
         password: validatedData.password,
       },
@@ -69,7 +68,6 @@ export async function signUp(
 
     return {
       success: true,
-      redirectTo: "/",
     };
   } catch (error) {
     console.error("Sign up error:", error);
@@ -133,7 +131,6 @@ export async function signIn(
 
     return {
       success: true,
-      redirectTo: "/",
     };
   } catch (error) {
     console.error("Sign in error:", error);

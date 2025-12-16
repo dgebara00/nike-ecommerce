@@ -50,7 +50,7 @@ export default function FilterGroup({
       } else {
         params.delete(key);
       }
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+      router.push(`${pathname}?${params.toString()}`, { scroll: true });
     },
     [searchParams, router, pathname]
   );

@@ -37,7 +37,7 @@ export default function Sort({ options = defaultSortOptions }: SortProps) {
       } else {
         params.set("sort", value);
       }
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+      router.push(`${pathname}?${params.toString()}`, { scroll: true });
       setIsOpen(false);
     },
     [searchParams, router, pathname]

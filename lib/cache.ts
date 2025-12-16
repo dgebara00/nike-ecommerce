@@ -5,14 +5,14 @@
  * Use these functions after modifying products, filters, or other cached data.
  */
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 /**
  * Invalidates the product cache.
  * Call this after creating, updating, or deleting products.
  */
 export function invalidateProductsCache(): void {
-  revalidateTag("products");
+  updateTag("products");
 }
 
 /**
@@ -20,7 +20,7 @@ export function invalidateProductsCache(): void {
  * Call this after modifying any filter options.
  */
 export function invalidateFiltersCache(): void {
-  revalidateTag("filters");
+  updateTag("filters");
 }
 
 /**
@@ -30,7 +30,7 @@ export function invalidateFiltersCache(): void {
 export function invalidateFilterCache(
   filterType: "genders" | "categories" | "brands" | "colors" | "sizes",
 ): void {
-  revalidateTag(filterType);
+  updateTag(filterType);
 }
 
 /**

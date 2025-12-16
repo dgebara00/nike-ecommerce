@@ -103,19 +103,31 @@ Request 3 → Read from Cache → Response (instant)
 
 ### Manual Revalidation
 
-Use Next.js `revalidateTag()` to invalidate specific caches:
+Use Next.js `updateTag()` to invalidate specific caches:
 
 ```typescript
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 // Invalidate all product data
-revalidateTag("products");
+updateTag("products");
 
 // Invalidate all filter data
-revalidateTag("filters");
+updateTag("filters");
 
 // Invalidate specific filter
-revalidateTag("genders");
+updateTag("genders");
+```
+
+Or use the provided utility functions:
+
+```typescript
+import { invalidateProductsCache, invalidateFiltersCache } from "@/lib/cache";
+
+// Invalidate all product data
+invalidateProductsCache();
+
+// Invalidate all filter data
+invalidateFiltersCache();
 ```
 
 ### Automatic Revalidation

@@ -1,18 +1,7 @@
-import {
-  pgTable,
-  text,
-  uuid,
-  numeric,
-  integer,
-  timestamp,
-  pgEnum,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, numeric, integer, timestamp, pgEnum } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-export const discountTypeEnum = pgEnum("discount_type", [
-  "percentage",
-  "fixed",
-]);
+export const discountTypeEnum = pgEnum("discount_type", ["percentage", "fixed"]);
 
 export const coupons = pgTable("coupons", {
   id: uuid("id").primaryKey().defaultRandom(),

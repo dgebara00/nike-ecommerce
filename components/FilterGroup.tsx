@@ -39,7 +39,7 @@ export default function FilterGroup({
       const value = searchParams.get(key);
       return value ? value.split(",") : [];
     },
-    [searchParams]
+    [searchParams],
   );
 
   const updateFilter = useCallback(
@@ -52,7 +52,7 @@ export default function FilterGroup({
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: true });
     },
-    [searchParams, router, pathname]
+    [searchParams, router, pathname],
   );
 
   const clearAllFilters = useCallback(() => {
@@ -101,9 +101,7 @@ export default function FilterGroup({
                   type="button"
                   onClick={() => updateFilter("category", [link.slug])}
                   className={`text-body font-body text-dark-900 hover:text-dark-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-dark-900 focus-visible:ring-offset-2 ${
-                    getSelectedValues("category").includes(link.slug)
-                      ? "font-body-medium"
-                      : ""
+                    getSelectedValues("category").includes(link.slug) ? "font-body-medium" : ""
                   }`}
                 >
                   {link.label}
@@ -165,15 +163,13 @@ export default function FilterGroup({
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-50 h-full w-80 max-w-[85vw] transform overflow-y-auto bg-light-100 p-6 shadow-lg transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:h-auto lg:w-64 lg:translate-x-0 lg:overflow-visible lg:p-0 lg:shadow-none ${
+        className={`fixed left-0 top-0 z-50 h-full w-80 max-w-[85vw] transform overflow-y-auto bg-light-100 p-6 shadow-lg transition-transform duration-300 ease-in-out lg:h-auto lg:w-64 lg:translate-x-0 lg:overflow-visible lg:p-0 lg:shadow-none lg:sticky lg:top-24 lg:z-9 ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         aria-label="Product filters"
       >
         <div className="mb-6 flex items-center justify-between lg:hidden">
-          <h2 className="text-heading-3 font-heading-3 text-dark-900">
-            Filters
-          </h2>
+          <h2 className="text-heading-3 font-heading-3 text-dark-900">Filters</h2>
           <button
             type="button"
             onClick={() => setIsMobileOpen(false)}
@@ -185,9 +181,7 @@ export default function FilterGroup({
         </div>
 
         <div className="mb-4 hidden lg:block">
-          <h2 className="text-heading-3 font-heading-3 text-dark-900">
-            New ({totalProducts})
-          </h2>
+          <h2 className="text-heading-3 font-heading-3 text-dark-900">New ({totalProducts})</h2>
         </div>
 
         {filterContent}

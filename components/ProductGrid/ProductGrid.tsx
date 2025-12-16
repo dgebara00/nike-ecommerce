@@ -9,11 +9,7 @@ export interface SearchParams {
   sort?: string;
 }
 
-async function ProductGrid({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
+async function ProductGrid({ searchParams }: { searchParams: SearchParams }) {
   const filters = {
     gender: searchParams.gender?.split(",").filter(Boolean),
     category: searchParams.category?.split(",").filter(Boolean),
@@ -31,7 +27,7 @@ async function ProductGrid({
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {products.map((product) => {
         const defaultVariant = product.variants.find(
-          (variant) => variant.id === product.defaultVariantId
+          (variant) => variant.id === product.defaultVariantId,
         );
         const priceValue = Number.parseFloat(`${defaultVariant?.price || 0}`);
         const defaultVariantImage = product.images[0];

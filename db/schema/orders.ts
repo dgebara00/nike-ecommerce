@@ -1,12 +1,4 @@
-import {
-  pgTable,
-  text,
-  uuid,
-  numeric,
-  integer,
-  timestamp,
-  pgEnum,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, numeric, integer, timestamp, pgEnum } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { user } from "./user";
@@ -21,17 +13,9 @@ export const orderStatusEnum = pgEnum("order_status", [
   "cancelled",
 ]);
 
-export const paymentMethodEnum = pgEnum("payment_method", [
-  "stripe",
-  "paypal",
-  "cod",
-]);
+export const paymentMethodEnum = pgEnum("payment_method", ["stripe", "paypal", "cod"]);
 
-export const paymentStatusEnum = pgEnum("payment_status", [
-  "initiated",
-  "completed",
-  "failed",
-]);
+export const paymentStatusEnum = pgEnum("payment_status", ["initiated", "completed", "failed"]);
 
 export const orders = pgTable("orders", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -46,9 +30,7 @@ export const orders = pgTable("orders", {
   billingAddressId: uuid("billing_address_id")
     .notNull()
     .references(() => addresses.id, { onDelete: "restrict" }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const orderItems = pgTable("order_items", {

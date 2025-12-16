@@ -19,9 +19,7 @@ export const products = pgTable("products", {
     .references(() => brands.id, { onDelete: "restrict" }),
   isPublished: boolean("is_published").notNull().default(false),
   defaultVariantId: uuid("default_variant_id"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow()

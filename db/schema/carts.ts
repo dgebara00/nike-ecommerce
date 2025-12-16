@@ -9,9 +9,7 @@ export const carts = pgTable("carts", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => user.id, { onDelete: "cascade" }),
   guestId: uuid("guest_id").references(() => guest.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow()

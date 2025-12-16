@@ -25,7 +25,7 @@ export interface AuthActionState {
 
 export async function signUp(
   _prevState: AuthActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<AuthActionState> {
   const rawData = {
     name: formData.get("name"),
@@ -90,7 +90,7 @@ export async function signUp(
 
 export async function signIn(
   _prevState: AuthActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<AuthActionState> {
   const rawData = {
     email: formData.get("email"),
@@ -233,7 +233,7 @@ export async function createGuestSession(): Promise<string> {
 export async function mergeGuestCartWithUserCart(
   guestSessionToken: string,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _userId: string
+  _userId: string,
 ): Promise<void> {
   try {
     await deleteGuestSession(guestSessionToken);

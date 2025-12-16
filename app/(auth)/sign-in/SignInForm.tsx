@@ -14,15 +14,12 @@ const initialState: AuthActionState = {
 };
 
 export default function SignInForm() {
-  const router = useRouter()
-  const [state, formAction, isPending] = useActionState(
-    signIn,
-    initialState
-  );
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(signIn, initialState);
 
   useEffect(() => {
     if (state.success) {
-      router.push('/');
+      router.push("/");
     }
   }, [router, state.success]);
 
@@ -41,9 +38,7 @@ export default function SignInForm() {
 
       <div className="flex items-center gap-4">
         <div className="h-px flex-1 bg-light-300" />
-        <span className="text-caption font-caption text-dark-500">
-          Or sign in with
-        </span>
+        <span className="text-caption font-caption text-dark-500">Or sign in with</span>
         <div className="h-px flex-1 bg-light-300" />
       </div>
 

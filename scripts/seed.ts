@@ -17,11 +17,7 @@ import {
 } from "../db/schema";
 
 // Helper function to generate SKU
-function generateSku(
-  productIndex: number,
-  colorSlug: string,
-  sizeSlug: string
-): string {
+function generateSku(productIndex: number, colorSlug: string, sizeSlug: string): string {
   const productCode = String(productIndex).padStart(3, "0");
   return `NK-${productCode}-${colorSlug.toUpperCase()}-${sizeSlug.toUpperCase()}`;
 }
@@ -86,8 +82,7 @@ const brandData = [
   {
     name: "Nike",
     slug: "nike",
-    logoUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
+    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
   },
 ];
 
@@ -386,19 +381,13 @@ async function seed() {
 
     // Seed genders
     console.log("Seeding genders...");
-    const insertedGenders = await db
-      .insert(genders)
-      .values(genderData)
-      .returning();
+    const insertedGenders = await db.insert(genders).values(genderData).returning();
     const genderMap = new Map(insertedGenders.map((g) => [g.slug, g.id]));
     console.log(`Seeded ${insertedGenders.length} genders.\n`);
 
     // Seed colors
     console.log("Seeding colors...");
-    const insertedColors = await db
-      .insert(colors)
-      .values(colorData)
-      .returning();
+    const insertedColors = await db.insert(colors).values(colorData).returning();
     const colorMap = new Map(insertedColors.map((c) => [c.slug, c.id]));
     console.log(`Seeded ${insertedColors.length} colors.\n`);
 
@@ -410,31 +399,20 @@ async function seed() {
 
     // Seed brands
     console.log("Seeding brands...");
-    const insertedBrands = await db
-      .insert(brands)
-      .values(brandData)
-      .returning();
+    const insertedBrands = await db.insert(brands).values(brandData).returning();
     const brandMap = new Map(insertedBrands.map((b) => [b.slug, b.id]));
     console.log(`Seeded ${insertedBrands.length} brands.\n`);
 
     // Seed categories
     console.log("Seeding categories...");
-    const insertedCategories = await db
-      .insert(categories)
-      .values(categoryData)
-      .returning();
+    const insertedCategories = await db.insert(categories).values(categoryData).returning();
     const categoryMap = new Map(insertedCategories.map((c) => [c.slug, c.id]));
     console.log(`Seeded ${insertedCategories.length} categories.\n`);
 
     // Seed collections
     console.log("Seeding collections...");
-    const insertedCollections = await db
-      .insert(collections)
-      .values(collectionData)
-      .returning();
-    const collectionMap = new Map(
-      insertedCollections.map((c) => [c.slug, c.id])
-    );
+    const insertedCollections = await db.insert(collections).values(collectionData).returning();
+    const collectionMap = new Map(insertedCollections.map((c) => [c.slug, c.id]));
     console.log(`Seeded ${insertedCollections.length} collections.\n`);
 
     // Seed products with variants and images
@@ -460,14 +438,8 @@ async function seed() {
       console.log(`  Created product: ${productData.name}`);
 
       // Get random colors and sizes for this product
-      const productColors = getRandomItems(
-        insertedColors,
-        getRandomInRange(2, 4)
-      );
-      const productSizes = getRandomItems(
-        insertedSizes,
-        getRandomInRange(6, 10)
-      );
+      const productColors = getRandomItems(insertedColors, getRandomInRange(2, 4));
+      const productSizes = getRandomItems(insertedSizes, getRandomInRange(6, 10));
 
       let firstVariantId: string | null = null;
 
@@ -477,9 +449,7 @@ async function seed() {
           const basePrice = productData.basePrice;
           const hasSale = Math.random() > 0.7; // 30% chance of sale
           const saleDiscount = hasSale ? getRandomInRange(10, 30) : 0;
-          const salePrice = hasSale
-            ? (basePrice * (1 - saleDiscount / 100)).toFixed(2)
-            : null;
+          const salePrice = hasSale ? (basePrice * (1 - saleDiscount / 100)).toFixed(2) : null;
 
           const [variant] = await db
             .insert(productVariants)
@@ -510,8 +480,7 @@ async function seed() {
         // Add images for this color variant (1-3 images per color)
         const numImages = getRandomInRange(1, 3);
         for (let i = 0; i < numImages; i++) {
-          const randomImageUrl =
-            imageUrls[Math.floor(Math.random() * imageUrls.length)];
+          const randomImageUrl = imageUrls[Math.floor(Math.random() * imageUrls.length)];
           await db.insert(productImages).values({
             productId: insertedProduct.id,
             url: randomImageUrl,
@@ -531,10 +500,7 @@ async function seed() {
       }
 
       // Assign product to random collections (1-2 collections)
-      const productCollectionsList = getRandomItems(
-        insertedCollections,
-        getRandomInRange(1, 2)
-      );
+      const productCollectionsList = getRandomItems(insertedCollections, getRandomInRange(1, 2));
       for (const collection of productCollectionsList) {
         await db.insert(productCollections).values({
           productId: insertedProduct.id,

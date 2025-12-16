@@ -14,9 +14,7 @@ export const reviews = pgTable("reviews", {
     .references(() => user.id, { onDelete: "cascade" }),
   rating: integer("rating").notNull(),
   comment: text("comment"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const insertReviewSchema = createInsertSchema(reviews);

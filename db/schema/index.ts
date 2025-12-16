@@ -395,5 +395,5 @@ export const relations = defineRelations(
         to: r.orders.id,
       }),
     },
-  })
+  }),
 );

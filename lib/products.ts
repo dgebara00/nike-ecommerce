@@ -36,25 +36,23 @@ export async function getProducts(filters?: ProductFilters) {
     let filteredProducts = allProducts;
 
     if (filters?.gender && filters.gender.length > 0) {
-      filteredProducts = filteredProducts.filter((product) =>
-        product.gender && filters.gender!.includes(product.gender.slug)
+      filteredProducts = filteredProducts.filter(
+        (product) => product.gender && filters.gender!.includes(product.gender.slug),
       );
     }
 
     if (filters?.category && filters.category.length > 0) {
-      filteredProducts = filteredProducts.filter((product) =>
-        product.category && filters.category!.includes(product.category.slug)
+      filteredProducts = filteredProducts.filter(
+        (product) => product.category && filters.category!.includes(product.category.slug),
       );
     }
 
     if (filters?.price && filters.price.length > 0) {
       filteredProducts = filteredProducts.filter((product) => {
-        const defaultVariant = product.variants.find(
-          (v) => v.id === product.defaultVariantId
-        );
+        const defaultVariant = product.variants.find((v) => v.id === product.defaultVariantId);
         if (!defaultVariant) return false;
         const price = Number.parseFloat(`${defaultVariant.price}`);
-        
+
         return filters.price!.some((range) => {
           const parsed = parsePriceRange(range);
           if (!parsed) return false;
@@ -66,17 +64,16 @@ export async function getProducts(filters?: ProductFilters) {
     switch (filters?.sort) {
       case "newest":
         filteredProducts.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
         break;
       case "price-high-to-low":
         filteredProducts.sort((a, b) => {
           const priceA = Number.parseFloat(
-            `${a.variants.find((v) => v.id === a.defaultVariantId)?.price || 0}`
+            `${a.variants.find((v) => v.id === a.defaultVariantId)?.price || 0}`,
           );
           const priceB = Number.parseFloat(
-            `${b.variants.find((v) => v.id === b.defaultVariantId)?.price || 0}`
+            `${b.variants.find((v) => v.id === b.defaultVariantId)?.price || 0}`,
           );
           return priceB - priceA;
         });
@@ -84,10 +81,10 @@ export async function getProducts(filters?: ProductFilters) {
       case "price-low-to-high":
         filteredProducts.sort((a, b) => {
           const priceA = Number.parseFloat(
-            `${a.variants.find((v) => v.id === a.defaultVariantId)?.price || 0}`
+            `${a.variants.find((v) => v.id === a.defaultVariantId)?.price || 0}`,
           );
           const priceB = Number.parseFloat(
-            `${b.variants.find((v) => v.id === b.defaultVariantId)?.price || 0}`
+            `${b.variants.find((v) => v.id === b.defaultVariantId)?.price || 0}`,
           );
           return priceA - priceB;
         });
@@ -95,8 +92,7 @@ export async function getProducts(filters?: ProductFilters) {
       case "featured":
       default:
         filteredProducts.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
         break;
     }

@@ -40,15 +40,12 @@ export default function Sort({ options = defaultSortOptions }: SortProps) {
       router.push(`${pathname}?${params.toString()}`, { scroll: true });
       setIsOpen(false);
     },
-    [searchParams, router, pathname]
+    [searchParams, router, pathname],
   );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -105,9 +102,7 @@ export default function Sort({ options = defaultSortOptions }: SortProps) {
               onClick={() => handleSelect(option.value)}
               onKeyDown={(e) => handleKeyDown(e, option.value)}
               className={`cursor-pointer px-4 py-2 text-body font-body transition-colors hover:bg-light-200 focus:bg-light-200 focus:outline-none ${
-                currentSort === option.value
-                  ? "font-body-medium text-dark-900"
-                  : "text-dark-700"
+                currentSort === option.value ? "font-body-medium text-dark-900" : "text-dark-700"
               }`}
             >
               {option.label}

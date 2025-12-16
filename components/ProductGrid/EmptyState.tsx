@@ -16,12 +16,10 @@ function EmptyState() {
           />
         </svg>
       </div>
-      <h3 className="mb-2 text-heading-3 font-heading-3 text-dark-900">
-        No products found
-      </h3>
+      <h3 className="mb-2 text-heading-3 font-heading-3 text-dark-900">No products found</h3>
       <p className="max-w-md text-body font-body text-dark-700">
-        We couldn&apos;t find any products matching your filters. Try adjusting your
-        selection or clearing all filters to see more options.
+        We couldn&apos;t find any products matching your filters. Try adjusting your selection or
+        clearing all filters to see more options.
       </p>
     </div>
   );

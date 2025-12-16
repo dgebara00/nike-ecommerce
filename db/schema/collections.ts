@@ -7,9 +7,7 @@ export const collections = pgTable("collections", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const productCollections = pgTable("product_collections", {
@@ -25,10 +23,8 @@ export const productCollections = pgTable("product_collections", {
 export const insertCollectionSchema = createInsertSchema(collections);
 export const selectCollectionSchema = createSelectSchema(collections);
 
-export const insertProductCollectionSchema =
-  createInsertSchema(productCollections);
-export const selectProductCollectionSchema =
-  createSelectSchema(productCollections);
+export const insertProductCollectionSchema = createInsertSchema(productCollections);
+export const selectProductCollectionSchema = createSelectSchema(productCollections);
 
 export type Collection = typeof collections.$inferSelect;
 export type NewCollection = typeof collections.$inferInsert;

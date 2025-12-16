@@ -15,17 +15,24 @@ export default async function Home() {
         {products.length ? (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => {
-              const priceValue = Number.parseFloat(`${product.price}`);
+              console.log("🚀 ~ Home ~ product:", product)
+              const defaultVariant = product.variants.find(variant => variant.id === product.defaultVariantId);
+              const priceValue = Number.parseFloat(`${defaultVariant?.price || 0}`);
+              // const defaultVariantImage = product.images.find(image => image.variantId === defaultVariant?.id);
+              // variantId isn't properly set on images, so we fallback to the first image of the product
+              // until this is fixed
+              
+              const defaultVariantImage = product.images[0];
 
               return (
                 <Card
-                  key={ product.slug}
-                  id={product.slug}
+                  key={ product.id}
+                  id={product.id}
                   title={product.name}
-                  category={product.category}
+                  category={product?.category?.name as string}
                   price={Number.isNaN(priceValue) ? 0 : priceValue}
-                  image={product.imageUrl}
-                  colorCount={product.inventory}
+                  image={defaultVariantImage.url}
+                  colorCount={defaultVariant?.inStock}
                 />
               );
             })}

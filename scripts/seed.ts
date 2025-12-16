@@ -18,14 +18,11 @@ import {
 
 // Helper function to generate SKU
 function generateSku(
-  productName: string,
+  productIndex: number,
   colorSlug: string,
   sizeSlug: string
 ): string {
-  const productCode = productName
-    .replace(/[^a-zA-Z0-9]/g, "")
-    .substring(0, 6)
-    .toUpperCase();
+  const productCode = String(productIndex).padStart(3, "0");
   return `NK-${productCode}-${colorSlug.toUpperCase()}-${sizeSlug.toUpperCase()}`;
 }
 
@@ -445,7 +442,8 @@ async function seed() {
     let totalVariants = 0;
     let totalImages = 0;
 
-    for (const productData of nikeProductData) {
+    for (let productIndex = 0; productIndex < nikeProductData.length; productIndex++) {
+      const productData = nikeProductData[productIndex];
       // Insert product
       const [insertedProduct] = await db
         .insert(products)
@@ -487,7 +485,7 @@ async function seed() {
             .insert(productVariants)
             .values({
               productId: insertedProduct.id,
-              sku: generateSku(productData.name, color.slug, size.slug),
+              sku: generateSku(productIndex, color.slug, size.slug),
               price: basePrice.toFixed(2),
               salePrice,
               colorId: color.id,

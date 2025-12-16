@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { db } from "@/db";
 
 export interface ProductFilters {
@@ -22,9 +23,14 @@ function parsePriceRange(priceRange: string): { min: number; max: number } | nul
   }
 }
 
-export async function getProducts(filters?: ProductFilters) {
-  try {
-    const allProducts = await db.query.products.findMany({
+/**
+ * Fetches all products from the database with caching.
+ * Uses Next.js unstable_cache to deduplicate concurrent requests and cache results.
+ * Cache is tagged with 'products' for revalidation.
+ */
+const getCachedProducts = unstable_cache(
+  async () => {
+    return await db.query.products.findMany({
       with: {
         category: true,
         gender: true,
@@ -32,6 +38,17 @@ export async function getProducts(filters?: ProductFilters) {
         images: true,
       },
     });
+  },
+  ["products"],
+  {
+    tags: ["products"],
+    revalidate: 3600, // Cache for 1 hour
+  },
+);
+
+export async function getProducts(filters?: ProductFilters) {
+  try {
+    const allProducts = await getCachedProducts();
 
     let filteredProducts = allProducts;
 

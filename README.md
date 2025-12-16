@@ -18,12 +18,14 @@ Next.js 16 storefront showcasing a Nike footwear catalog backed by Neon + Drizzl
    npm install
    ```
 2. Copy the sample env file and populate credentials
+
    ```bash
    cp .env.example .env.local
    ```
 
    - `DATABASE_URL` – full Neon connection string
    - `BETTER_AUTH_SECRET` – at least 32 chars (`openssl rand -base64 32`)
+
 3. Apply the latest schema and seed Nike inventory
    ```bash
    npm run db:push
@@ -55,9 +57,11 @@ Next.js 16 storefront showcasing a Nike footwear catalog backed by Neon + Drizzl
 
 - `db/schema.ts` defines the `products` table, types, and defaults.
 - `scripts/seed.ts` wipes/reseeds the catalog with curated Nike footwear metadata.
-- `lib/products.ts` exposes a safe server-side accessor with graceful fallbacks.
+- `lib/products.ts` exposes a safe server-side accessor with graceful fallbacks and Next.js caching.
+- `lib/filters.ts` provides cached filter options (genders, categories, brands, colors, sizes).
 - `stores/useProductFilters.ts` centralizes Zustand filter/search/sort state used by `ProductGallery`.
 - `/app/api/auth/[...better-auth]` wires Better Auth to the Drizzle adapter for credential-based flows; client helpers can consume the same endpoint.
+- **Caching Strategy**: Database queries use `unstable_cache` for request deduplication and 1-hour result caching. See [`docs/CACHING.md`](./docs/CACHING.md) for details.
 
 ### Production Checklist
 

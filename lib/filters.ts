@@ -1,54 +1,126 @@
+import { unstable_cache } from "next/cache";
 import { db } from "@/db";
 
-export async function getGenders() {
-  try {
+/**
+ * Fetches all genders with caching.
+ * Uses Next.js unstable_cache to prevent redundant database queries.
+ */
+const getCachedGenders = unstable_cache(
+  async () => {
     return await db.query.genders.findMany({
       orderBy: (gender, { asc }) => asc(gender.label),
     });
+  },
+  ["genders"],
+  {
+    tags: ["filters", "genders"],
+    revalidate: 3600, // Cache for 1 hour
+  },
+);
+
+export async function getGenders() {
+  try {
+    return await getCachedGenders();
   } catch (error) {
     console.error("Failed to fetch genders", error);
     return [];
   }
 }
 
-export async function getBrands() {
-  try {
+/**
+ * Fetches all brands with caching.
+ */
+const getCachedBrands = unstable_cache(
+  async () => {
     return await db.query.brands.findMany({
       orderBy: (brand, { asc }) => asc(brand.name),
     });
+  },
+  ["brands"],
+  {
+    tags: ["filters", "brands"],
+    revalidate: 3600,
+  },
+);
+
+export async function getBrands() {
+  try {
+    return await getCachedBrands();
   } catch (error) {
     console.error("Failed to fetch brands", error);
     return [];
   }
 }
 
-export async function getCategories() {
-  try {
+/**
+ * Fetches all categories with caching.
+ */
+const getCachedCategories = unstable_cache(
+  async () => {
     return await db.query.categories.findMany({
       orderBy: (category, { asc }) => asc(category.name),
     });
+  },
+  ["categories"],
+  {
+    tags: ["filters", "categories"],
+    revalidate: 3600,
+  },
+);
+
+export async function getCategories() {
+  try {
+    return await getCachedCategories();
   } catch (error) {
     console.error("Failed to fetch categories", error);
     return [];
   }
 }
 
-export async function getColors() {
-  try {
+/**
+ * Fetches all colors with caching.
+ */
+const getCachedColors = unstable_cache(
+  async () => {
     return await db.query.colors.findMany({
       orderBy: (color, { asc }) => asc(color.name),
     });
+  },
+  ["colors"],
+  {
+    tags: ["filters", "colors"],
+    revalidate: 3600,
+  },
+);
+
+export async function getColors() {
+  try {
+    return await getCachedColors();
   } catch (error) {
     console.error("Failed to fetch colors", error);
     return [];
   }
 }
 
-export async function getSizes() {
-  try {
+/**
+ * Fetches all sizes with caching.
+ */
+const getCachedSizes = unstable_cache(
+  async () => {
     return await db.query.sizes.findMany({
       orderBy: (size, { asc }) => asc(size.sortOrder),
     });
+  },
+  ["sizes"],
+  {
+    tags: ["filters", "sizes"],
+    revalidate: 3600,
+  },
+);
+
+export async function getSizes() {
+  try {
+    return await getCachedSizes();
   } catch (error) {
     console.error("Failed to fetch sizes", error);
     return [];

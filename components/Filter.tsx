@@ -38,11 +38,7 @@ export default function Filter({
       </button>
       {isExpanded && (
         <div className="mt-3">
-          <CheckboxGroup
-            options={options}
-            selectedValues={selectedValues}
-            onChange={onChange}
-          />
+          <CheckboxGroup options={options} selectedValues={selectedValues} onChange={onChange} />
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import ProductGrid, { type SearchParams, ProductsLoading} from "@/components/ProductGrid";
+import ProductGrid, { type SearchParams, ProductsLoading } from "@/components/ProductGrid";
 import { getProducts } from "@/lib/products";
 import { getAllFilterOptions } from "@/lib/filters";
 import FilterGroup from "@/components/FilterGroup";
@@ -8,10 +8,14 @@ import Sort from "@/components/Sort";
 
 type Props = {
   searchParams: Promise<SearchParams>;
-}
+};
 
 export default async function Home({ searchParams }: Props) {
-  const [resolvedSearchParams, filterOptions, allProducts] = await Promise.all([searchParams, getAllFilterOptions(), getProducts()]);
+  const [resolvedSearchParams, filterOptions, allProducts] = await Promise.all([
+    searchParams,
+    getAllFilterOptions(),
+    getProducts(),
+  ]);
 
   const filters = [
     {
@@ -40,15 +44,10 @@ export default async function Home({ searchParams }: Props) {
     <main className="min-h-screen bg-light-100">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between lg:hidden">
-          <h1 className="text-heading-3 font-heading-3 text-dark-900">
-            New ({totalProducts})
-          </h1>
+          <h1 className="text-heading-3 font-heading-3 text-dark-900">New ({totalProducts})</h1>
           <div className="flex items-center gap-4">
             <Suspense fallback={null}>
-              <FilterGroup
-                filters={filters}
-                totalProducts={totalProducts}
-              />
+              <FilterGroup filters={filters} totalProducts={totalProducts} />
             </Suspense>
             <Suspense fallback={null}>
               <Sort />
@@ -59,10 +58,7 @@ export default async function Home({ searchParams }: Props) {
         <div className="flex gap-8">
           <div className="hidden lg:block">
             <Suspense fallback={null}>
-              <FilterGroup
-                filters={filters}
-                totalProducts={totalProducts}
-              />
+              <FilterGroup filters={filters} totalProducts={totalProducts} />
             </Suspense>
           </div>
 

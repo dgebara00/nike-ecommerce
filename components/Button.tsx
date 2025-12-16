@@ -9,23 +9,15 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary:
-    "bg-dark-900 text-light-100 hover:bg-dark-700 focus:ring-dark-900",
+  primary: "bg-dark-900 text-light-100 hover:bg-dark-700 focus:ring-dark-900",
   outline:
     "bg-light-100 text-dark-900 border border-light-300 hover:bg-light-200 focus:ring-dark-500",
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    {
-      variant = "primary",
-      fullWidth = false,
-      children,
-      className = "",
-      disabled,
-      ...props
-    },
-    ref
+    { variant = "primary", fullWidth = false, children, className = "", disabled, ...props },
+    ref,
   ) => {
     return (
       <button
@@ -39,7 +31,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

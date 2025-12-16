@@ -33,19 +33,12 @@ export const signInSchema = z.object({
 });
 
 export const guestSessionSchema = z.object({
-  sessionToken: z
-    .string()
-    .uuid("Invalid session token format")
-    .optional(),
+  sessionToken: z.string().uuid("Invalid session token format").optional(),
 });
 
 export const mergeCartSchema = z.object({
-  guestSessionToken: z
-    .string()
-    .uuid("Invalid guest session token format"),
-  userId: z
-    .string()
-    .uuid("Invalid user ID format"),
+  guestSessionToken: z.string().uuid("Invalid guest session token format"),
+  userId: z.string().uuid("Invalid user ID format"),
 });
 
 export type SignUpFormData = z.infer<typeof signUpSchema>;

@@ -14,41 +14,42 @@ Next.js 16 storefront showcasing a Nike footwear catalog backed by Neon + Drizzl
 ### Environment Setup
 
 1. Install dependencies
-	```bash
-	npm install
-	```
+   ```bash
+   npm install
+   ```
 2. Copy the sample env file and populate credentials
-	```bash
-	cp .env.example .env.local
-	```
-	- `DATABASE_URL` – full Neon connection string
-	- `BETTER_AUTH_SECRET` – at least 32 chars (`openssl rand -base64 32`)
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   - `DATABASE_URL` – full Neon connection string
+   - `BETTER_AUTH_SECRET` – at least 32 chars (`openssl rand -base64 32`)
 3. Apply the latest schema and seed Nike inventory
-	```bash
-	npm run db:push
-	npm run db:seed
-	```
+   ```bash
+   npm run db:push
+   npm run db:seed
+   ```
 4. (Optional) Inspect data visually
-	```bash
-	npm run db:studio
-	```
+   ```bash
+   npm run db:studio
+   ```
 5. Start the dev server
-	```bash
-	npm run dev
-	```
+   ```bash
+   npm run dev
+   ```
 
 ### Available Scripts
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start Next.js in development mode |
-| `npm run build` | Create a production build (set env vars first) |
-| `npm run start` | Run the compiled server |
-| `npm run lint` | Run ESLint |
-| `npm run format` / `format:write` | Check or fix formatting with Prettier |
-| `npm run db:push` | Synchronize Drizzle schema to the database |
-| `npm run db:seed` | Reseed products with curated Nike drops |
-| `npm run db:studio` | Launch Drizzle Studio for inspection |
+| Command                           | Description                                    |
+| --------------------------------- | ---------------------------------------------- |
+| `npm run dev`                     | Start Next.js in development mode              |
+| `npm run build`                   | Create a production build (set env vars first) |
+| `npm run start`                   | Run the compiled server                        |
+| `npm run lint`                    | Run ESLint                                     |
+| `npm run format` / `format:write` | Check or fix formatting with Prettier          |
+| `npm run db:push`                 | Synchronize Drizzle schema to the database     |
+| `npm run db:seed`                 | Reseed products with curated Nike drops        |
+| `npm run db:studio`               | Launch Drizzle Studio for inspection           |
 
 ### Architecture Notes
 

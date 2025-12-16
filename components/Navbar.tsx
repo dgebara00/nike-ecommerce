@@ -11,10 +11,7 @@ interface NavLinkProps {
 
 function NavLink({ href, children }: NavLinkProps) {
   return (
-    <Link
-      href={href}
-      className="text-dark-900 transition-colors hover:text-dark-700"
-    >
+    <Link href={href} className="text-dark-900 transition-colors hover:text-dark-700">
       {children}
     </Link>
   );
@@ -33,7 +30,7 @@ export function Navbar() {
   ];
 
   return (
-    <header className="w-full bg-light-100">
+    <header className="w-full bg-light-100 sticky top-0 z-10 shadow-sm">
       <nav
         className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8 font-medium"
         aria-label="Main navigation"
@@ -67,10 +64,7 @@ export function Navbar() {
           >
             Search
           </Link>
-          <Link
-            href="/cart"
-            className="text-dark-900 transition-colors hover:text-dark-700"
-          >
+          <Link href="/cart" className="text-dark-900 transition-colors hover:text-dark-700">
             My Cart ({cartCount})
           </Link>
 

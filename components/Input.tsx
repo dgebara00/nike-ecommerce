@@ -20,10 +20,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="flex flex-col gap-2">
-        <label
-          htmlFor={inputId}
-          className="text-body font-body-medium text-dark-900"
-        >
+        <label htmlFor={inputId} className="text-body font-body-medium text-dark-900">
           {label}
         </label>
         <div className="relative">
@@ -60,7 +57,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

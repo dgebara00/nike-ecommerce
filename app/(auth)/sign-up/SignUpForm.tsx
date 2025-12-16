@@ -9,21 +9,17 @@ import Input from "@/components/Input";
 
 import { signUp, type AuthActionState } from "@/lib/auth/actions";
 
-
 const initialState: AuthActionState = {
   success: false,
 };
 
 export default function SignUpForm() {
-  const router = useRouter()
-  const [state, formAction, isPending] = useActionState(
-    signUp,
-    initialState
-  );
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(signUp, initialState);
 
   useEffect(() => {
     if (state.success) {
-      router.push('/');
+      router.push("/");
     }
   }, [router, state.success]);
 
@@ -42,9 +38,7 @@ export default function SignUpForm() {
 
       <div className="flex items-center gap-4">
         <div className="h-px flex-1 bg-light-300" />
-        <span className="text-caption font-caption text-dark-500">
-          Or sign up with
-        </span>
+        <span className="text-caption font-caption text-dark-500">Or sign up with</span>
         <div className="h-px flex-1 bg-light-300" />
       </div>
 

@@ -25,12 +25,10 @@ export default function AuthLayout({
         </Link>
 
         <div className="my-12 lg:my-0">
-          <h1 className="text-heading-2 font-heading-2 text-light-100">
-            Just Do It
-          </h1>
+          <h1 className="text-heading-2 font-heading-2 text-light-100">Just Do It</h1>
           <p className="mt-4 max-w-md text-lead font-lead text-dark-500">
-            Join millions of athletes and fitness enthusiasts who trust Nike for
-            their performance needs.
+            Join millions of athletes and fitness enthusiasts who trust Nike for their performance
+            needs.
           </p>
           <div className="mt-6 flex gap-2">
             <span className="h-2 w-2 rounded-full bg-light-100" />

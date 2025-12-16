@@ -28,7 +28,7 @@ export const auth = betterAuth({
   advanced: {
     cookiePrefix: "nike",
     database: {
-      generateId: 'uuid'
+      generateId: "uuid",
     },
     cookies: {
       session_token: {

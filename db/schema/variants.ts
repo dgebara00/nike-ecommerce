@@ -1,13 +1,4 @@
-import {
-  pgTable,
-  text,
-  uuid,
-  numeric,
-  integer,
-  real,
-  jsonb,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, numeric, integer, real, jsonb, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { products } from "./products";
@@ -36,9 +27,7 @@ export const productVariants = pgTable("product_variants", {
   inStock: integer("in_stock").notNull().default(0),
   weight: real("weight"),
   dimensions: jsonb("dimensions").$type<VariantDimensions>(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const insertProductVariantSchema = createInsertSchema(productVariants);

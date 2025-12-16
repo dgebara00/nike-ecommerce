@@ -41,9 +41,7 @@ export function Card({ id, title, category, price, image, colorCount, badge, hre
         {/* Title and Price Row */}
         <div className="flex items-start justify-between gap-2 font-medium">
           <h3 className="text-dark-900">{title}</h3>
-          <span className="flex-shrink-0 text-dark-900">
-            ${price.toFixed(2)}
-          </span>
+          <span className="flex-shrink-0 text-dark-900">${price.toFixed(2)}</span>
         </div>
 
         {/* Category */}

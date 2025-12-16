@@ -18,9 +18,7 @@ export default function SignInPage() {
       </div>
 
       <div className="text-center">
-        <h2 className="text-heading-2 font-heading-2 text-dark-900">
-          Welcome Back!
-        </h2>
+        <h2 className="text-heading-2 font-heading-2 text-dark-900">Welcome Back!</h2>
         <p className="mt-2 text-body font-body text-dark-700">
           Sign in to continue your fitness journey
         </p>
@@ -30,17 +28,11 @@ export default function SignInPage() {
 
       <p className="text-center text-caption font-caption text-dark-700">
         By signing in, you agree to our{" "}
-        <Link
-          href="/terms"
-          className="text-dark-900 underline hover:text-dark-700"
-        >
+        <Link href="/terms" className="text-dark-900 underline hover:text-dark-700">
           Terms of Service
         </Link>{" "}
         and{" "}
-        <Link
-          href="/privacy"
-          className="text-dark-900 underline hover:text-dark-700"
-        >
+        <Link href="/privacy" className="text-dark-900 underline hover:text-dark-700">
           Privacy Policy
         </Link>
       </p>

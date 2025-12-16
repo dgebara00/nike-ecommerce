@@ -10,8 +10,7 @@ const jost = Jost({
 
 export const metadata: Metadata = {
   title: "Nike Commerce Cloud",
-  description:
-    "Next.js storefront seeded with Nike inventory, Drizzle ORM, and Better Auth.",
+  description: "Next.js storefront seeded with Nike inventory, Drizzle ORM, and Better Auth.",
 };
 
 export default function RootLayout({

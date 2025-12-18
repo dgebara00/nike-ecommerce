@@ -1,105 +1,152 @@
 import { db } from "@/db";
+import { eq, SQL, inArray, ilike, or, and, lte, gte, sql } from "drizzle-orm";
+
+import { genders, products, categories, productVariants, productImages } from "@/db/schema";
 
 export interface ProductFilters {
-  gender?: string[];
-  category?: string[];
-  price?: string[];
-  sort?: string;
+	search?: string;
+	gender?: string[];
+	category?: string[];
+	price?: string[];
+	sort?: string;
 }
 
 function parsePriceRange(priceRange: string): { min: number; max: number } | null {
-  switch (priceRange) {
-    case "0-50":
-      return { min: 0, max: 50 };
-    case "50-100":
-      return { min: 50, max: 100 };
-    case "100-150":
-      return { min: 100, max: 150 };
-    case "150-plus":
-      return { min: 150, max: 999999 };
-    default:
-      return null;
-  }
+	switch (priceRange) {
+		case "0-50":
+			return { min: 0, max: 50 };
+		case "50-100":
+			return { min: 50, max: 100 };
+		case "100-150":
+			return { min: 100, max: 150 };
+		case "150-plus":
+			return { min: 150, max: 999999 };
+		default:
+			return null;
+	}
 }
 
 export async function getProducts(filters?: ProductFilters) {
-  try {
-    const allProducts = await db.query.products.findMany({
-      with: {
-        category: true,
-        gender: true,
-        variants: true,
-        images: true,
-      },
-    });
+	const baseCondition: SQL[] = [eq(products.isPublished, true)];
 
-    let filteredProducts = allProducts;
+	if (filters?.search) {
+		baseCondition.push(
+			or(ilike(products.description, `%${filters.search}%`), ilike(products.name, `%${filters.search}%`)) as SQL
+		);
+	}
 
-    if (filters?.gender && filters.gender.length > 0) {
-      filteredProducts = filteredProducts.filter(
-        (product) => product.gender && filters.gender!.includes(product.gender.slug),
-      );
-    }
+	if (filters?.category?.length) {
+		baseCondition.push(inArray(categories.slug, filters.category));
+	}
 
-    if (filters?.category && filters.category.length > 0) {
-      filteredProducts = filteredProducts.filter(
-        (product) => product.category && filters.category!.includes(product.category.slug),
-      );
-    }
+	if (filters?.gender?.length) {
+		baseCondition.push(inArray(genders.slug, filters.gender));
+	}
 
-    if (filters?.price && filters.price.length > 0) {
-      filteredProducts = filteredProducts.filter((product) => {
-        const defaultVariant = product.variants.find((v) => v.id === product.defaultVariantId);
-        if (!defaultVariant) return false;
-        const price = Number.parseFloat(`${defaultVariant.price}`);
+	const variantConditions: SQL[] = [];
 
-        return filters.price!.some((range) => {
-          const parsed = parsePriceRange(range);
-          if (!parsed) return false;
-          return price >= parsed.min && price < parsed.max;
-        });
-      });
-    }
+	// product variants
 
-    switch (filters?.sort) {
-      case "newest":
-        filteredProducts.sort(
-          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        );
-        break;
-      case "price-high-to-low":
-        filteredProducts.sort((a, b) => {
-          const priceA = Number.parseFloat(
-            `${a.variants.find((v) => v.id === a.defaultVariantId)?.price || 0}`,
-          );
-          const priceB = Number.parseFloat(
-            `${b.variants.find((v) => v.id === b.defaultVariantId)?.price || 0}`,
-          );
-          return priceB - priceA;
-        });
-        break;
-      case "price-low-to-high":
-        filteredProducts.sort((a, b) => {
-          const priceA = Number.parseFloat(
-            `${a.variants.find((v) => v.id === a.defaultVariantId)?.price || 0}`,
-          );
-          const priceB = Number.parseFloat(
-            `${b.variants.find((v) => v.id === b.defaultVariantId)?.price || 0}`,
-          );
-          return priceA - priceB;
-        });
-        break;
-      case "featured":
-      default:
-        filteredProducts.sort(
-          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        );
-        break;
-    }
+	if (filters?.price?.length) {
+		const priceConditions = filters.price
+			.map(priceRange => {
+				const parsedPriceRange = parsePriceRange(priceRange);
 
-    return filteredProducts;
-  } catch (error) {
-    console.error("Failed to fetch products", error);
-    return [];
-  }
+				if (!parsedPriceRange) {
+					return null;
+				}
+
+				return and(
+					gte(productVariants.price, parsedPriceRange.min.toString()),
+					lte(productVariants.price, parsedPriceRange.max.toString())
+				);
+			})
+			.filter(Boolean);
+
+		if (priceConditions.length) {
+			variantConditions.push(or(...(priceConditions as SQL[])) as SQL);
+		}
+	}
+
+	// product images
+
+	const productImagesQuery = db
+		.select({
+			variantId: productImages.variantId,
+			images: sql`
+        json_agg(
+          json_build_object(
+            'isPrimary', ${productImages.isPrimary},
+            'url', ${productImages.url}
+          )
+          ORDER BY ${productImages.isPrimary}
+        )
+      `.as("variantImages"),
+		})
+		.from(productImages)
+		.groupBy(productImages.variantId)
+		.as("productImages");
+
+	const productVariantsQuery = db
+		.select({
+			productId: productVariants.productId,
+			variants: sql`
+        json_agg(
+          json_build_object(
+            'inStock', ${productVariants.inStock},
+            'price', ${productVariants.price},
+            'salePrice', ${productVariants.salePrice}))
+    `.as("variants"),
+			priceMin: sql`MIN(${productVariants.price})`.as("priceMin"),
+			priceMax: sql`MAX(${productVariants.price})`.as("priceMax"),
+		})
+		.from(productVariants)
+		.where(variantConditions.length ? and(...variantConditions) : undefined)
+		.groupBy(productVariants.productId)
+		.as("productVariants");
+
+	try {
+		const filteredProducts = await db
+			.select({
+				id: products.id,
+				name: products.name,
+				createdAt: products.createdAt,
+				gender: genders.label,
+				category: categories.name,
+				variants: productVariantsQuery.variants,
+				defaultVariantImages: productImagesQuery.images,
+				priceMin: productVariantsQuery.priceMin,
+				priceMax: productVariantsQuery.priceMax,
+			})
+			.from(products)
+			.leftJoin(productVariantsQuery, eq(products.id, productVariantsQuery.productId))
+			.leftJoin(productImagesQuery, eq(products.defaultVariantId, productImagesQuery.variantId))
+			.leftJoin(categories, eq(products.categoryId, categories.id))
+			.leftJoin(genders, eq(products.genderId, genders.id))
+			.where(and(...baseCondition));
+
+		return filteredProducts;
+	} catch (error) {
+		console.error("Failed to fetch products", error);
+		return [];
+	}
+}
+
+export async function getProduct(productId: string) {
+	return db.query.products.findFirst({
+		with: {
+			brand: true,
+			category: true,
+			defaultVariant: true,
+			gender: true,
+			images: true,
+			productCollections: true,
+			reviews: true,
+			variants: true,
+			wishlists: true,
+		},
+		where: {
+			id: productId,
+		},
+	});
 }

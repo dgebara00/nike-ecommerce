@@ -38,16 +38,14 @@ export default async function Home({ searchParams }: Props) {
 		},
 	];
 
-	const totalProducts = allProducts.length;
-
 	return (
 		<main className="min-h-screen bg-light-100">
 			<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 				<div className="mb-6 flex items-center justify-between lg:hidden">
-					<h1 className="text-heading-3 font-heading-3 text-dark-900">New ({totalProducts})</h1>
+					<h1 className="text-heading-3 font-heading-3 text-dark-900">New ({allProducts.total})</h1>
 					<div className="flex items-center gap-4">
 						<Suspense fallback={null}>
-							<FilterGroup filters={filters} totalProducts={totalProducts} />
+							<FilterGroup filters={filters} totalProducts={allProducts.total} />
 						</Suspense>
 						<Suspense fallback={null}>
 							<Sort />
@@ -58,7 +56,7 @@ export default async function Home({ searchParams }: Props) {
 				<div className="flex gap-8">
 					<div className="hidden lg:block">
 						<Suspense fallback={null}>
-							<FilterGroup filters={filters} totalProducts={totalProducts} />
+							<FilterGroup filters={filters} totalProducts={allProducts.total} />
 						</Suspense>
 					</div>
 

@@ -17,27 +17,26 @@ async function ProductGrid({ searchParams }: { searchParams: SearchParams }) {
 		sort: searchParams.sort,
 	};
 
-	const products = await getProducts(filters);
+	const { products, total } = await getProducts(filters);
 
-	if (products.length === 0) {
+	if (total === 0) {
 		return <EmptyState />;
 	}
 
 	return (
 		<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{products.map(product => {
-				const defaultVariantImage = product.defaultVariantImages?.[0].url;
+				const defaultImage = product.images?.[0]?.url;
 
 				return (
 					<Card
 						key={product.id}
 						id={product.id}
 						title={product.name}
-						category={product?.category as string}
+						category={product.category}
 						priceMin={parseFloat(`${product.priceMin}`)}
 						priceMax={parseFloat(`${product.priceMax}`)}
-						image={defaultVariantImage ?? "/placeholder.png"}
-						// colorCount={defaultVariant?.inStock}
+						image={defaultImage ?? "/placeholder.png"}
 					/>
 				);
 			})}

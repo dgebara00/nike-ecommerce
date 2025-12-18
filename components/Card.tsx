@@ -4,16 +4,15 @@ import Link from "next/link";
 interface CardProps {
 	id?: string | number;
 	title: string;
-	category: string;
+	category: string | null;
 	priceMin: number;
 	priceMax: number;
 	image: string;
-	colorCount?: number;
 	badge?: string;
 	href?: string;
 }
 
-export function Card({ id, title, category, priceMin, priceMax, image, colorCount, badge, href }: CardProps) {
+export function Card({ id, title, category, priceMin, priceMax, image, badge, href }: CardProps) {
 	const hasMultiplePrices = priceMin !== priceMax;
 
 	const cardContent = (
@@ -51,10 +50,7 @@ export function Card({ id, title, category, priceMin, priceMax, image, colorCoun
 				</div>
 
 				{/* Category */}
-				<p className="text-caption font-caption text-dark-700">{category}</p>
-
-				{/* Color Count */}
-				{colorCount && colorCount > 0 && <p className="text-caption font-caption text-dark-700">{colorCount} Colour</p>}
+				{category && <p className="text-caption font-caption text-dark-700">{category}</p>}
 			</div>
 		</article>
 	);

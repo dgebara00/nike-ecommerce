@@ -119,7 +119,7 @@ export async function getProducts(filters?: ProductFilters) {
 				priceMax: productVariantsQuery.priceMax,
 			})
 			.from(products)
-			.leftJoin(productVariantsQuery, eq(products.id, productVariantsQuery.productId))
+			.innerJoin(productVariantsQuery, eq(products.id, productVariantsQuery.productId))
 			.leftJoin(productImagesQuery, eq(products.defaultVariantId, productImagesQuery.variantId))
 			.leftJoin(categories, eq(products.categoryId, categories.id))
 			.leftJoin(genders, eq(products.genderId, genders.id))

@@ -170,28 +170,28 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 							/>
 						)
 					)}
-				</div>
 
-				{hasMultipleImages && (
-						<div className="absolute bottom-4 right-4 flex gap-2">
-						<button
-							type="button"
-							onClick={handlePrevious}
-							aria-label="Previous image"
-							className="flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
-						>
-							<ChevronLeft className="h-5 w-5 text-dark-900" aria-hidden="true" />
-						</button>
-						<button
-							type="button"
-							onClick={handleNext}
-							aria-label="Next image"
-							className="flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
-						>
-							<ChevronRight className="h-5 w-5 text-dark-900" aria-hidden="true" />
-						</button>
-					</div>
-				)}
+					{hasMultipleImages && (
+						<div className="absolute bottom-4 right-4 z-10 flex gap-2">
+							<button
+								type="button"
+								onClick={handlePrevious}
+								aria-label="Previous image"
+								className="flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
+							>
+								<ChevronLeft className="h-5 w-5 text-dark-900" aria-hidden="true" />
+							</button>
+							<button
+								type="button"
+								onClick={handleNext}
+								aria-label="Next image"
+								className="flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
+							>
+								<ChevronRight className="h-5 w-5 text-dark-900" aria-hidden="true" />
+							</button>
+						</div>
+					)}
+				</div>
 			</div>
 		</div>
 	);

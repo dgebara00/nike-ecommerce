@@ -57,12 +57,12 @@ export function SizePicker({ sizes, onSizeSelect }: SizePickerProps) {
 							disabled={isDisabled}
 							onClick={() => handleSizeClick(size)}
 							className={`flex h-12 items-center justify-center rounded-md border text-body transition-all focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2 ${
-								isSelected
-									? "border-dark-900 bg-light-100 font-medium text-dark-900"
-									: isDisabled
-										? "cursor-not-allowed border-light-300 bg-light-100 text-dark-500 line-through"
-										: "border-light-300 bg-light-100 text-dark-900 hover:border-dark-700"
-							}`}
+									isSelected
+										? "border-dark-900 bg-light-100 font-medium text-dark-900"
+										: isDisabled
+											? "cursor-not-allowed border-light-300 bg-light-100 text-dark-500"
+											: "border-light-300 bg-light-100 text-dark-900 hover:border-dark-700"
+								}`}
 						>
 							{size.name}
 						</button>

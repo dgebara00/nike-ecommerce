@@ -12,30 +12,58 @@ import {
   collections,
   products,
   productVariants,
+  productVariantSizes,
   productImages,
   productCollections,
 } from "../db/schema";
 
-// Helper function to generate SKU
-function generateSku(productIndex: number, colorSlug: string, sizeSlug: string): string {
-  const productCode = String(productIndex).padStart(3, "0");
-  return `NK-${productCode}-${colorSlug.toUpperCase()}-${sizeSlug.toUpperCase()}`;
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
-// Helper function to get random items from array
+function generateSku(productSlug: string, colorSlug: string): string {
+  const productCode = productSlug.slice(0, 10).toUpperCase().replace(/-/g, "");
+  return `NK-${productCode}-${colorSlug.toUpperCase()}`;
+}
+
 function getRandomItems<T>(arr: T[], count: number): T[] {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
+  return shuffled.slice(0, Math.min(count, arr.length));
 }
 
-// Helper function to get random number in range
 function getRandomInRange(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Helper function to get random price
-function getRandomPrice(min: number, max: number): string {
-  return (Math.random() * (max - min) + min).toFixed(2);
+function logSection(title: string): void {
+  console.log("\n" + "=".repeat(60));
+  console.log(`  ${title}`);
+  console.log("=".repeat(60));
+}
+
+function logSuccess(message: string): void {
+  console.log(`[SUCCESS] ${message}`);
+}
+
+function logInfo(message: string): void {
+  console.log(`[INFO] ${message}`);
+}
+
+function logError(message: string, error?: unknown): void {
+  console.error(`[ERROR] ${message}`);
+  if (error instanceof Error) {
+    console.error(`  -> ${error.message}`);
+    if (error.stack) {
+      console.error(`  Stack: ${error.stack.split("\n").slice(1, 3).join("\n")}`);
+    }
+  }
 }
 
 // Seed data
@@ -267,89 +295,12 @@ const nikeProductData = [
     genderSlug: "men",
     basePrice: 75,
   },
-  {
-    name: "Revolution 7",
-    description:
-      "The Nike Revolution 7 is a lightweight, breathable running shoe that provides a comfortable ride for your daily runs. Its soft foam midsole cushions every step.",
-    categorySlug: "running",
-    genderSlug: "women",
-    basePrice: 70,
-  },
-  {
-    name: "Free Run 5.0",
-    description:
-      "The Nike Free Run 5.0 delivers a barefoot-like feel with flexible grooves that let your foot move naturally. Its lightweight design makes it perfect for short runs and gym workouts.",
-    categorySlug: "running",
-    genderSlug: "men",
-    basePrice: 110,
-  },
-  {
-    name: "React Infinity Run 4",
-    description:
-      "The Nike React Infinity Run 4 is designed to help reduce injury and keep you on the run. Its wider platform and React foam provide a stable, cushioned ride.",
-    categorySlug: "running",
-    genderSlug: "women",
-    basePrice: 160,
-  },
-  {
-    name: "Air Zoom Structure 25",
-    description:
-      "The Nike Air Zoom Structure 25 provides stability for overpronators without sacrificing speed. Its dual-density midsole and Zoom Air unit deliver a responsive ride.",
-    categorySlug: "running",
-    genderSlug: "men",
-    basePrice: 140,
-  },
-  {
-    name: "Zoom Court Pro",
-    description:
-      "The NikeCourt Zoom Pro is designed for the competitive tennis player. Its Zoom Air unit provides responsive cushioning, while the durable outsole offers excellent traction on hard courts.",
-    categorySlug: "tennis",
-    genderSlug: "men",
-    basePrice: 130,
-  },
-  {
-    name: "Air Zoom Vapor 11",
-    description:
-      "The NikeCourt Air Zoom Vapor 11 is built for speed on the tennis court. Its lightweight design and Zoom Air cushioning help you move quickly and react to every shot.",
-    categorySlug: "tennis",
-    genderSlug: "women",
-    basePrice: 160,
-  },
-  {
-    name: "Air Max 270",
-    description:
-      "Nike's first lifestyle Air Max brings you style, comfort and big attitude in the Air Max 270. The design draws inspiration from Air Max icons, showcasing Nike's greatest innovation with its large window and fresh colors.",
-    categorySlug: "lifestyle",
-    genderSlug: "unisex",
-    basePrice: 160,
-  },
-  {
-    name: "Air Zoom GT Cut 3",
-    description:
-      "The Nike Air Zoom GT Cut 3 is designed for the quick, crafty player who wants to create space on the court. Its Zoom Air Strobel provides responsive cushioning for explosive cuts.",
-    categorySlug: "basketball",
-    genderSlug: "men",
-    basePrice: 190,
-  },
-  {
-    name: "Air Max DN",
-    description:
-      "Introducing the Air Max DN, the next generation of Air Max. Dynamic Air technology features tube-shaped Air units that deliver a reactive sensation with every step.",
-    categorySlug: "lifestyle",
-    genderSlug: "men",
-    basePrice: 160,
-  },
-  {
-    name: "P-6000",
-    description:
-      "The Nike P-6000 draws inspiration from the Pegasus line of the early 2000s. Its combination of mesh and leather creates a layered look, while the foam midsole provides lightweight cushioning.",
-    categorySlug: "lifestyle",
-    genderSlug: "women",
-    basePrice: 110,
-  },
 ];
 
-// Image URLs (using placeholder images)
+// ============================================================================
+// IMAGE URLs (Nike product images from Unsplash)
+// ============================================================================
+
 const imageUrls = [
   "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80",
   "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=900&q=80",
@@ -361,128 +312,214 @@ const imageUrls = [
   "https://images.unsplash.com/photo-1600269452121-4f2416e55c28?auto=format&fit=crop&w=900&q=80",
 ];
 
+// ============================================================================
+// MAIN SEED FUNCTION
+// ============================================================================
+
 async function seed() {
-  console.log("Starting seed process...\n");
+  console.log("\n");
+  console.log("*".repeat(60));
+  console.log("*" + " ".repeat(58) + "*");
+  console.log("*" + "       NIKE E-COMMERCE DATABASE SEED SCRIPT".padEnd(58) + "*");
+  console.log("*" + " ".repeat(58) + "*");
+  console.log("*".repeat(60));
+  console.log("\nStarting seed process at:", new Date().toISOString());
 
   try {
-    // Clear existing data in reverse order of dependencies
-    console.log("Clearing existing data...");
-    await db.delete(productCollections);
-    await db.delete(productImages);
-    await db.delete(productVariants);
-    await db.delete(products);
-    await db.delete(collections);
-    await db.delete(categories);
-    await db.delete(brands);
-    await db.delete(sizes);
-    await db.delete(colors);
-    await db.delete(genders);
-    console.log("Existing data cleared.\n");
+    // ========================================================================
+    // STEP 1: Clear existing data (in reverse order of dependencies)
+    // ========================================================================
+    logSection("STEP 1: Clearing Existing Data");
 
-    // Seed genders
-    console.log("Seeding genders...");
+    logInfo("Deleting product collections...");
+    await db.delete(productCollections);
+
+    logInfo("Deleting product images...");
+    await db.delete(productImages);
+
+    logInfo("Deleting product variant sizes...");
+    await db.delete(productVariantSizes);
+
+    logInfo("Deleting product variants...");
+    await db.delete(productVariants);
+
+    logInfo("Deleting products...");
+    await db.delete(products);
+
+    logInfo("Deleting collections...");
+    await db.delete(collections);
+
+    logInfo("Deleting categories...");
+    await db.delete(categories);
+
+    logInfo("Deleting brands...");
+    await db.delete(brands);
+
+    logInfo("Deleting sizes...");
+    await db.delete(sizes);
+
+    logInfo("Deleting colors...");
+    await db.delete(colors);
+
+    logInfo("Deleting genders...");
+    await db.delete(genders);
+
+    logSuccess("All existing data cleared successfully!");
+
+    // ========================================================================
+    // STEP 2: Seed Filters (Genders, Colors, Sizes, Brands)
+    // ========================================================================
+    logSection("STEP 2: Seeding Filters");
+
+    // Seed Genders
+    logInfo("Seeding genders...");
     const insertedGenders = await db.insert(genders).values(genderData).returning();
     const genderMap = new Map(insertedGenders.map((g) => [g.slug, g.id]));
-    console.log(`Seeded ${insertedGenders.length} genders.\n`);
+    logSuccess(`Seeded ${insertedGenders.length} genders: ${insertedGenders.map((g) => g.label).join(", ")}`);
 
-    // Seed colors
-    console.log("Seeding colors...");
+    // Seed Colors
+    logInfo("Seeding colors...");
     const insertedColors = await db.insert(colors).values(colorData).returning();
-    const colorMap = new Map(insertedColors.map((c) => [c.slug, c.id]));
-    console.log(`Seeded ${insertedColors.length} colors.\n`);
+    logSuccess(`Seeded ${insertedColors.length} colors: ${insertedColors.map((c) => c.name).join(", ")}`);
 
-    // Seed sizes
-    console.log("Seeding sizes...");
+    // Seed Sizes
+    logInfo("Seeding sizes...");
     const insertedSizes = await db.insert(sizes).values(sizeData).returning();
-    const sizeMap = new Map(insertedSizes.map((s) => [s.slug, s.id]));
-    console.log(`Seeded ${insertedSizes.length} sizes.\n`);
+    logSuccess(`Seeded ${insertedSizes.length} sizes: ${insertedSizes.map((s) => s.name).join(", ")}`);
 
-    // Seed brands
-    console.log("Seeding brands...");
+    // Seed Brands
+    logInfo("Seeding brands...");
     const insertedBrands = await db.insert(brands).values(brandData).returning();
     const brandMap = new Map(insertedBrands.map((b) => [b.slug, b.id]));
-    console.log(`Seeded ${insertedBrands.length} brands.\n`);
+    logSuccess(`Seeded ${insertedBrands.length} brands: ${insertedBrands.map((b) => b.name).join(", ")}`);
 
-    // Seed categories
-    console.log("Seeding categories...");
+    // ========================================================================
+    // STEP 3: Seed Categories
+    // ========================================================================
+    logSection("STEP 3: Seeding Categories");
+
+    logInfo("Seeding categories...");
     const insertedCategories = await db.insert(categories).values(categoryData).returning();
     const categoryMap = new Map(insertedCategories.map((c) => [c.slug, c.id]));
-    console.log(`Seeded ${insertedCategories.length} categories.\n`);
+    logSuccess(`Seeded ${insertedCategories.length} categories: ${insertedCategories.map((c) => c.name).join(", ")}`);
 
-    // Seed collections
-    console.log("Seeding collections...");
+    // ========================================================================
+    // STEP 4: Seed Collections
+    // ========================================================================
+    logSection("STEP 4: Seeding Collections");
+
+    logInfo("Seeding collections...");
     const insertedCollections = await db.insert(collections).values(collectionData).returning();
-    const collectionMap = new Map(insertedCollections.map((c) => [c.slug, c.id]));
-    console.log(`Seeded ${insertedCollections.length} collections.\n`);
+    logSuccess(
+      `Seeded ${insertedCollections.length} collections: ${insertedCollections.map((c) => c.name).join(", ")}`
+    );
 
-    // Seed products with variants and images
-    console.log("Seeding products with variants and images...");
+    // ========================================================================
+    // STEP 5: Seed Products with Variants, Sizes, and Images
+    // ========================================================================
+    logSection("STEP 5: Seeding Products");
+
+    let totalProducts = 0;
     let totalVariants = 0;
+    let totalVariantSizes = 0;
     let totalImages = 0;
+    let totalProductCollections = 0;
 
-    for (let productIndex = 0; productIndex < nikeProductData.length; productIndex++) {
-      const productData = nikeProductData[productIndex];
+    for (const productData of nikeProductData) {
+      const productSlug = generateSlug(productData.name);
+
+      // Validate required references
+      const categoryId = categoryMap.get(productData.categorySlug);
+      const genderId = genderMap.get(productData.genderSlug);
+      const brandId = brandMap.get("nike");
+
+      if (!categoryId) {
+        logError(`Category not found for slug: ${productData.categorySlug}`);
+        continue;
+      }
+      if (!genderId) {
+        logError(`Gender not found for slug: ${productData.genderSlug}`);
+        continue;
+      }
+      if (!brandId) {
+        logError("Nike brand not found!");
+        continue;
+      }
+
       // Insert product
       const [insertedProduct] = await db
         .insert(products)
         .values({
           name: productData.name,
+          slug: productSlug,
           description: productData.description,
-          categoryId: categoryMap.get(productData.categorySlug)!,
-          genderId: genderMap.get(productData.genderSlug)!,
-          brandId: brandMap.get("nike")!,
+          categoryId,
+          genderId,
+          brandId,
           isPublished: true,
         })
         .returning();
 
-      console.log(`  Created product: ${productData.name}`);
+      totalProducts++;
+      logInfo(`Created product: ${productData.name} (${productSlug})`);
 
-      // Get random colors and sizes for this product
-      const productColors = getRandomItems(insertedColors, getRandomInRange(2, 4));
-      const productSizes = getRandomItems(insertedSizes, getRandomInRange(6, 10));
+      // Randomize: 2-4 color variants per product
+      const numColors = getRandomInRange(2, 4);
+      const productColors = getRandomItems(insertedColors, numColors);
+
+      // Randomize: 6-10 sizes available per variant
+      const numSizes = getRandomInRange(6, 10);
+      const productSizes = getRandomItems(insertedSizes, numSizes);
 
       let firstVariantId: string | null = null;
 
-      // Create variants for each color-size combination
+      // Create variants (one per color)
       for (const color of productColors) {
+        const sku = generateSku(productSlug, color.slug);
+
+        // Insert variant (product + color combination)
+        const [variant] = await db
+          .insert(productVariants)
+          .values({
+            productId: insertedProduct.id,
+            sku,
+            colorId: color.id,
+          })
+          .returning();
+
+        totalVariants++;
+
+        if (!firstVariantId) {
+          firstVariantId = variant.id;
+        }
+
+        // Create variant sizes (one per size for this variant)
         for (const size of productSizes) {
           const basePrice = productData.basePrice;
           const hasSale = Math.random() > 0.7; // 30% chance of sale
           const saleDiscount = hasSale ? getRandomInRange(10, 30) : 0;
           const salePrice = hasSale ? (basePrice * (1 - saleDiscount / 100)).toFixed(2) : null;
 
-          const [variant] = await db
-            .insert(productVariants)
-            .values({
-              productId: insertedProduct.id,
-              sku: generateSku(productIndex, color.slug, size.slug),
-              price: basePrice.toFixed(2),
-              salePrice,
-              colorId: color.id,
-              sizeId: size.id,
-              inStock: getRandomInRange(0, 50),
-              weight: parseFloat(getRandomPrice(0.3, 0.8)),
-              dimensions: {
-                length: parseFloat(getRandomPrice(28, 35)),
-                width: parseFloat(getRandomPrice(10, 14)),
-                height: parseFloat(getRandomPrice(10, 15)),
-              },
-            })
-            .returning();
+          // Randomize stock: 0-50, with some sizes out of stock
+          const inStock = Math.random() > 0.15 ? getRandomInRange(1, 50) : 0;
 
-          if (!firstVariantId) {
-            firstVariantId = variant.id;
-          }
+          await db.insert(productVariantSizes).values({
+            variantId: variant.id,
+            sizeId: size.id,
+            price: basePrice.toFixed(2),
+            salePrice,
+            inStock,
+          });
 
-          totalVariants++;
+          totalVariantSizes++;
         }
 
-        // Add images for this color variant (1-3 images per color)
+        // Add images for this variant (1-3 images per color variant)
         const numImages = getRandomInRange(1, 3);
         for (let i = 0; i < numImages; i++) {
           const randomImageUrl = imageUrls[Math.floor(Math.random() * imageUrls.length)];
           await db.insert(productImages).values({
-            productId: insertedProduct.id,
+            variantId: variant.id,
             url: randomImageUrl,
             sortOrder: i,
             isPrimary: i === 0,
@@ -493,36 +530,76 @@ async function seed() {
 
       // Update product with default variant
       if (firstVariantId) {
-        await db
-          .update(products)
-          .set({ defaultVariantId: firstVariantId })
-          .where(eq(products.id, insertedProduct.id));
+        await db.update(products).set({ defaultVariantId: firstVariantId }).where(eq(products.id, insertedProduct.id));
       }
 
       // Assign product to random collections (1-2 collections)
-      const productCollectionsList = getRandomItems(insertedCollections, getRandomInRange(1, 2));
+      const numCollections = getRandomInRange(1, 2);
+      const productCollectionsList = getRandomItems(insertedCollections, numCollections);
       for (const collection of productCollectionsList) {
         await db.insert(productCollections).values({
           productId: insertedProduct.id,
           collectionId: collection.id,
         });
+        totalProductCollections++;
       }
     }
 
-    console.log(`\nSeeded ${nikeProductData.length} products.`);
-    console.log(`Seeded ${totalVariants} product variants.`);
-    console.log(`Seeded ${totalImages} product images.`);
+    // ========================================================================
+    // SUMMARY
+    // ========================================================================
+    logSection("SEED COMPLETE - SUMMARY");
 
-    console.log("\nSeed completed successfully!");
+    console.log("\n  Filter Tables:");
+    console.log(`    - Genders:    ${insertedGenders.length}`);
+    console.log(`    - Colors:     ${insertedColors.length}`);
+    console.log(`    - Sizes:      ${insertedSizes.length}`);
+    console.log(`    - Brands:     ${insertedBrands.length}`);
+
+    console.log("\n  Category & Collection Tables:");
+    console.log(`    - Categories: ${insertedCategories.length}`);
+    console.log(`    - Collections: ${insertedCollections.length}`);
+
+    console.log("\n  Product Tables:");
+    console.log(`    - Products:           ${totalProducts}`);
+    console.log(`    - Product Variants:   ${totalVariants}`);
+    console.log(`    - Variant Sizes:      ${totalVariantSizes}`);
+    console.log(`    - Product Images:     ${totalImages}`);
+    console.log(`    - Product Collections: ${totalProductCollections}`);
+
+    console.log("\n" + "=".repeat(60));
+    logSuccess("Database seeded successfully!");
+    console.log("=".repeat(60));
+    console.log("\nCompleted at:", new Date().toISOString());
   } catch (error) {
-    console.error("Error during seeding:", error);
+    logSection("SEED FAILED");
+    logError("An error occurred during seeding:", error);
+
+    if (error instanceof Error) {
+      console.error("\nFull error details:");
+      console.error("  Name:", error.name);
+      console.error("  Message:", error.message);
+      if (error.stack) {
+        console.error("  Stack trace:");
+        console.error(error.stack);
+      }
+    }
+
     throw error;
   }
 }
 
+// ============================================================================
+// EXECUTE SEED
+// ============================================================================
+
 seed()
-  .catch((error) => {
-    console.error("Failed to seed database:", error);
-    process.exit(1);
+  .then(() => {
+    console.log("\nExiting with success code (0)");
+    process.exit(0);
   })
-  .finally(() => process.exit(0));
+  .catch((error) => {
+    console.error("\n[FATAL] Seed script failed!");
+    console.error(error);
+    process.exit(1);
+  });

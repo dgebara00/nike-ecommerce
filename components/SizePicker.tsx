@@ -52,11 +52,11 @@ export function SizePicker({ sizes, onSizeSelect }: SizePickerProps) {
 							aria-label={`Size ${size.name}${isDisabled ? ", out of stock" : ""}${isSelected ? ", selected" : ""}`}
 							disabled={isDisabled}
 							onClick={() => handleSizeClick(size)}
-							className={`flex h-12 items-center justify-center rounded-md border text-body transition-all focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2 ${
+							className={`cursor-${isDisabled ? "not-allowed" : "pointer"} flex h-12 items-center justify-center rounded-md border text-body transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-900 focus-visible:ring-offset-2 ${
 								isSelected
 									? "border-dark-900 bg-light-100 font-medium text-dark-900"
 									: isDisabled
-										? "cursor-not-allowed border-light-300 bg-light-100 text-dark-500 line-through"
+										? "border-light-300 bg-light-100 text-dark-500 line-through"
 										: "border-light-300 bg-light-100 text-dark-900 hover:border-dark-700"
 							}`}
 						>

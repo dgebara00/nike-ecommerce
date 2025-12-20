@@ -75,7 +75,7 @@ export default function Sort({ options = defaultSortOptions }: SortProps) {
 			<button
 				type="button"
 				onClick={() => setIsOpen(!isOpen)}
-				className="flex items-center gap-2 text-body font-body text-dark-900 hover:text-dark-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-dark-900 focus-visible:ring-offset-2"
+				className="cursor-pointer flex items-center gap-2 text-body font-body text-dark-900 hover:text-dark-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-dark-900 focus-visible:ring-offset-2"
 				aria-haspopup="listbox"
 				aria-expanded={isOpen}
 			>

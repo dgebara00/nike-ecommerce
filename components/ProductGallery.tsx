@@ -138,7 +138,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 								tabIndex={isSelected ? 0 : -1}
 								onClick={() => handleThumbnailClick(index)}
 								onKeyDown={handleKeyDown}
-								className={`relative shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2 ${
+								className={`cursor-pointer relative shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-900 focus-visible:ring-offset-2 ${
 									isSelected ? "border-dark-900" : "border-transparent hover:border-dark-500"
 								}`}
 							>
@@ -271,7 +271,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 									type="button"
 									onClick={handlePrevious}
 									aria-label="Previous image"
-									className="flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
+									className="cursor-pointer flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
 								>
 									<ChevronLeft className="h-5 w-5 text-dark-900" aria-hidden="true" />
 								</button>
@@ -279,7 +279,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 									type="button"
 									onClick={handleNext}
 									aria-label="Next image"
-									className="flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
+									className="cursor-pointer flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
 								>
 									<ChevronRight className="h-5 w-5 text-dark-900" aria-hidden="true" />
 								</button>

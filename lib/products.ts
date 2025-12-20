@@ -50,7 +50,6 @@ function parsePriceRange(priceRange: string): { min: number; max: number } | nul
 }
 
 export async function getProducts(filters?: ProductFilters): Promise<{ total: number; products: Product[] }> {
-	console.log("🚀 ~ getProducts ~ filters:", filters);
 	const baseCondition: SQL[] = [eq(products.isPublished, true)];
 
 	if (filters?.search) {

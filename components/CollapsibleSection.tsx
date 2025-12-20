@@ -36,7 +36,7 @@ export function CollapsibleSection({
 				aria-expanded={isOpen}
 				aria-controls={contentId}
 				disabled={disabled}
-				className="flex w-full items-center justify-between py-5 text-left transition-colors hover:text-dark-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-dark-900"
+				className={`flex w-full items-center justify-between py-5 text-left transition-colors hover:text-dark-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-dark-900 ${disabled ? "" : "cursor-pointer"}`}
 			>
 				<span className="text-body font-body-medium text-dark-900">{title}</span>
 				<div className={`${disabled ? "hidden" : "flex"} items-center gap-3`}>

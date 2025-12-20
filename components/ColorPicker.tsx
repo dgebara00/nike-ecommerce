@@ -18,7 +18,7 @@ interface ColorPickerProps {
 export function ColorPicker({ colors, currentSlug, productSlug }: ColorPickerProps) {
 	return (
 		<div className="flex flex-wrap gap-2" role="group" aria-label="Select color">
-			{colors.map((color) => {
+			{colors.map(color => {
 				const isSelected = color.slug === currentSlug;
 				const href = `/products/${productSlug}/${color.slug}`;
 
@@ -28,17 +28,11 @@ export function ColorPicker({ colors, currentSlug, productSlug }: ColorPickerPro
 						href={href}
 						aria-label={`Select ${color.name} color${isSelected ? " (currently selected)" : ""}`}
 						aria-current={isSelected ? "true" : undefined}
-						className={`relative h-14 w-14 overflow-hidden rounded-md border-2 transition-all hover:border-dark-700 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2 ${
+						className={`relative h-14 w-14 overflow-hidden rounded-md border-2 transition-all hover:border-dark-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-900 focus-visible:ring-offset-2 ${
 							isSelected ? "border-dark-900" : "border-light-300"
 						}`}
 					>
-						<Image
-							src={color.image}
-							alt={color.name}
-							fill
-							sizes="56px"
-							className="object-cover"
-						/>
+						<Image src={color.image} alt={color.name} fill sizes="56px" className="object-cover" />
 					</Link>
 				);
 			})}

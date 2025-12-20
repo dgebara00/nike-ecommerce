@@ -116,11 +116,11 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 			{/* Desktop thumbnails - hidden on mobile */}
 			{hasMultipleImages && (
 				<div
-					className="hidden lg:flex order-2 lg:order-1 lg:flex-col gap-2 lg:overflow-y-auto lg:max-h-175 sticky top-16"
+					className="hidden lg:flex order-2 lg:order-1 lg:flex-col gap-2 lg:overflow-y-auto lg:max-h-153 sticky top-16"
 					role="tablist"
 					aria-label="Product image thumbnails"
 				>
-					{images.map((image, index) => {
+					{images.slice(0, 7).map((image, index) => {
 						const isSelected = index === selectedIndex;
 						const hasThumbError = imageErrors.has(image.id);
 

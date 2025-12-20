@@ -8,6 +8,7 @@ interface CollapsibleSectionProps {
 	children: React.ReactNode;
 	defaultOpen?: boolean;
 	rightContent?: React.ReactNode;
+	disabled?: boolean;
 }
 
 export function CollapsibleSection({
@@ -15,6 +16,7 @@ export function CollapsibleSection({
 	children,
 	defaultOpen = false,
 	rightContent,
+	disabled = false,
 }: CollapsibleSectionProps) {
 	const [isOpen, setIsOpen] = useState(defaultOpen);
 	const uniqueId = useId();
@@ -22,7 +24,7 @@ export function CollapsibleSection({
 	const buttonId = `collapsible-button-${uniqueId}`;
 
 	const toggleOpen = () => {
-		setIsOpen((prev) => !prev);
+		setIsOpen(prev => !prev);
 	};
 
 	return (
@@ -33,10 +35,11 @@ export function CollapsibleSection({
 				onClick={toggleOpen}
 				aria-expanded={isOpen}
 				aria-controls={contentId}
+				disabled={disabled}
 				className="flex w-full items-center justify-between py-5 text-left transition-colors hover:text-dark-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-dark-900"
 			>
 				<span className="text-body font-body-medium text-dark-900">{title}</span>
-				<div className="flex items-center gap-3">
+				<div className={`${disabled ? "hidden" : "flex"} items-center gap-3`}>
 					{rightContent}
 					{isOpen ? (
 						<ChevronUp className="h-5 w-5 text-dark-900" aria-hidden="true" />

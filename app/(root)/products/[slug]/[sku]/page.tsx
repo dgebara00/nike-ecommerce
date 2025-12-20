@@ -7,12 +7,7 @@ import ColorPicker from "@/components/ColorPicker";
 import SizePicker from "@/components/SizePicker";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import RelatedProducts from "@/components/RelatedProducts";
-import {
-	mockRelatedProducts,
-	getProductBySlugAndSku,
-	getDefaultSku,
-	isValidSku,
-} from "@/lib/mock-product-data";
+import { mockRelatedProducts, getProductBySlugAndSku, getDefaultSku, isValidSku } from "@/lib/mock-product-data";
 
 interface ProductPageProps {
 	params: Promise<{
@@ -38,7 +33,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 		redirect("/");
 	}
 
-	const currentColor = product.colors.find((c) => c.slug === sku);
+	const currentColor = product.colors.find(c => c.slug === sku);
 
 	return (
 		<main className="min-h-screen bg-light-100">
@@ -54,25 +49,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
 							<p className="mt-1 text-body text-dark-700">{product.category}</p>
 
 							<div className="mt-4">
-								<span className="text-heading-3 font-heading-3 text-dark-900">
-									${product.price}
-								</span>
+								<span className="text-heading-3 font-heading-3 text-dark-900">${product.price}</span>
 							</div>
 
-							{product.promoText && (
-								<p className="mt-2 text-caption font-caption text-green">{product.promoText}</p>
-							)}
+							{product.promoText && <p className="mt-2 text-caption font-caption text-green">{product.promoText}</p>}
 						</div>
 
 						<div className="mb-6">
-							<ColorPicker
-								colors={product.colors}
-								currentSlug={sku}
-								productSlug={product.slug}
-							/>
-							{currentColor && (
-								<p className="mt-2 text-caption text-dark-700">{currentColor.name}</p>
-							)}
+							<ColorPicker colors={product.colors} currentSlug={sku} productSlug={product.slug} />
+							{currentColor && <p className="mt-2 text-caption text-dark-700">{currentColor.name}</p>}
 						</div>
 
 						<div className="mb-6">
@@ -88,7 +73,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 						</div>
 
 						<div className="border-t border-light-300">
-							<CollapsibleSection title="Product Details" defaultOpen>
+							<CollapsibleSection title="Product Details" defaultOpen disabled>
 								<div className="space-y-4 text-body text-dark-700">
 									<p>{product.details.description}</p>
 
@@ -100,12 +85,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
 									<div className="space-y-1">
 										<p>
-											<span className="text-dark-900">Shown:</span>{" "}
-											{product.details.colorway}
+											<span className="text-dark-900">Shown:</span> {product.details.colorway}
 										</p>
 										<p>
-											<span className="text-dark-900">Style:</span>{" "}
-											{product.details.styleCode}
+											<span className="text-dark-900">Style:</span> {product.details.styleCode}
 										</p>
 									</div>
 								</div>
@@ -138,7 +121,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 								}
 							>
 								<div className="space-y-6">
-									{product.reviews.map((review) => (
+									{product.reviews.map(review => (
 										<div key={review.id} className="space-y-2">
 											<div className="flex items-center gap-2">
 												<div className="flex">
@@ -146,17 +129,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
 														<Star
 															key={index}
 															className={`h-4 w-4 ${
-																index < review.rating
-																	? "fill-dark-900 text-dark-900"
-																	: "fill-light-300 text-light-300"
+																index < review.rating ? "fill-dark-900 text-dark-900" : "fill-light-300 text-light-300"
 															}`}
 															aria-hidden="true"
 														/>
 													))}
 												</div>
-												<span className="text-caption font-caption text-dark-900">
-													{review.title}
-												</span>
+												<span className="text-caption font-caption text-dark-900">{review.title}</span>
 											</div>
 											<p className="text-body text-dark-700">{review.content}</p>
 											<p className="text-footnote text-dark-500">

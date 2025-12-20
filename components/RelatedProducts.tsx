@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+
 import { Card } from "@/components/Card";
 
 export interface RelatedProductItem {
@@ -114,17 +116,17 @@ export function RelatedProducts({ products, title = "You Might Also Like" }: Rel
 					}
 				`}</style>
 				{products.map(product => (
-					<div key={product.id} className="flex-shrink-0 w-72 sm:w-80 lg:w-96 snap-start">
-						<Card
-							id={product.id}
-							title={product.name}
-							category={product.category}
-							priceMin={product.priceMin}
-							priceMax={product.priceMax}
-							image={product.image}
-							badge={product.badge}
-							href={`/products/${product.slug}`}
-						/>
+					<div key={product.id} className="shrink-0 w-72 sm:w-80 lg:w-96 snap-start">
+						<Link href={`/products/${product.slug}`}>
+							<Card
+								title={product.name}
+								category={product.category}
+								priceMin={product.priceMin}
+								priceMax={product.priceMax}
+								image={product.image}
+								badge={product.badge}
+							/>
+						</Link>
 					</div>
 				))}
 			</div>

@@ -25,6 +25,7 @@ type Image = {
 type Product = {
 	id: string;
 	name: string;
+	slug: string;
 	createdAt: Date;
 	gender: string | null;
 	priceMin: number;
@@ -144,6 +145,7 @@ export async function getProducts(filters?: ProductFilters): Promise<{ total: nu
 		const filteredProducts: Product[] = await db
 			.select({
 				id: products.id,
+				slug: products.slug,
 				name: products.name,
 				createdAt: products.createdAt,
 				gender: genders.label,

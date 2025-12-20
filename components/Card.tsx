@@ -1,18 +1,15 @@
 import Image from "next/image";
-import Link from "next/link";
 
 interface CardProps {
-	id?: string | number;
 	title: string;
 	category: string | null;
 	priceMin: number;
 	priceMax: number;
 	image: string;
 	badge?: string;
-	href?: string;
 }
 
-export function Card({ id, title, category, priceMin, priceMax, image, badge, href }: CardProps) {
+export function Card({ title, category, priceMin, priceMax, image, badge }: CardProps) {
 	const hasMultiplePrices = priceMin !== priceMax;
 
 	const cardContent = (
@@ -54,22 +51,6 @@ export function Card({ id, title, category, priceMin, priceMax, image, badge, hr
 			</div>
 		</article>
 	);
-
-	if (href) {
-		return (
-			<Link href={href} className="block">
-				{cardContent}
-			</Link>
-		);
-	}
-
-	if (id) {
-		return (
-			<Link href={`/products/${id}`} className="block">
-				{cardContent}
-			</Link>
-		);
-	}
 
 	return cardContent;
 }

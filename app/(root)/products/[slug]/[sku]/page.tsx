@@ -12,28 +12,28 @@ import { mockRelatedProducts, getProductBySlugAndSku, getDefaultSku, isValidSku 
 interface ProductPageProps {
 	params: Promise<{
 		slug: string;
-		sku: string;
+		color: string;
 	}>;
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-	const { slug, sku } = await params;
+	const { slug, color } = await params;
 
-	if (!isValidSku(slug, sku)) {
-		const defaultSku = getDefaultSku(slug);
-		if (defaultSku) {
-			redirect(`/products/${slug}/${defaultSku}`);
+	if (!isValidSku(slug, color)) {
+		const defaultColor = getDefaultSku(slug);
+		if (defaultColor) {
+			redirect(`/products/${slug}/${defaultColor}`);
 		}
 		redirect("/");
 	}
 
-	const product = getProductBySlugAndSku(slug, sku);
+	const product = getProductBySlugAndSku(slug, color);
 
 	if (!product) {
 		redirect("/");
 	}
 
-	const currentColor = product.colors.find(c => c.slug === sku);
+	const currentColor = product.colors.find(c => c.slug === color);
 
 	return (
 		<main className="min-h-screen bg-light-100">
@@ -56,7 +56,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 						</div>
 
 						<div className="mb-6">
-							<ColorPicker colors={product.colors} currentSlug={sku} productSlug={product.slug} />
+							<ColorPicker colors={product.colors} currentSlug={color} productSlug={product.slug} />
 							{currentColor && <p className="mt-2 text-caption text-dark-700">{currentColor.name}</p>}
 						</div>
 

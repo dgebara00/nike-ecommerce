@@ -3,28 +3,28 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { user } from "./user";
 import { guest } from "./guest";
-import { productVariants } from "./variants";
+import { productVariantSizes } from "./variantSizes";
 
 export const carts = pgTable("carts", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").references(() => user.id, { onDelete: "cascade" }),
-  guestId: uuid("guest_id").references(() => guest.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id").references(() => user.id, { onDelete: "cascade" }),
+	guestId: uuid("guest_id").references(() => guest.id, { onDelete: "cascade" }),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+	updatedAt: timestamp("updated_at", { withTimezone: true })
+		.notNull()
+		.defaultNow()
+		.$onUpdate(() => new Date()),
 });
 
 export const cartItems = pgTable("cart_items", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  cartId: uuid("cart_id")
-    .notNull()
-    .references(() => carts.id, { onDelete: "cascade" }),
-  productVariantId: uuid("product_variant_id")
-    .notNull()
-    .references(() => productVariants.id, { onDelete: "cascade" }),
-  quantity: integer("quantity").notNull().default(1),
+	id: uuid("id").primaryKey().defaultRandom(),
+	cartId: uuid("cart_id")
+		.notNull()
+		.references(() => carts.id, { onDelete: "cascade" }),
+	productVariantSizeId: uuid("product_variant_size_id")
+		.notNull()
+		.references(() => productVariantSizes.id, { onDelete: "cascade" }),
+	quantity: integer("quantity").notNull().default(1),
 });
 
 export const insertCartSchema = createInsertSchema(carts);

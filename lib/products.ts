@@ -25,6 +25,7 @@ type Image = {
 type Product = {
 	id: string;
 	name: string;
+	slug: string;
 	createdAt: Date;
 	gender: string | null;
 	priceMin: number;
@@ -50,7 +51,6 @@ function parsePriceRange(priceRange: string): { min: number; max: number } | nul
 }
 
 export async function getProducts(filters?: ProductFilters): Promise<{ total: number; products: Product[] }> {
-	console.log("🚀 ~ getProducts ~ filters:", filters);
 	const baseCondition: SQL[] = [eq(products.isPublished, true)];
 
 	if (filters?.search) {
@@ -145,6 +145,7 @@ export async function getProducts(filters?: ProductFilters): Promise<{ total: nu
 		const filteredProducts: Product[] = await db
 			.select({
 				id: products.id,
+				slug: products.slug,
 				name: products.name,
 				createdAt: products.createdAt,
 				gender: genders.label,

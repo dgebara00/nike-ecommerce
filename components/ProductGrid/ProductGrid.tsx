@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { getProducts } from "@/lib/products";
 import Card from "../Card";
 import EmptyState from "./EmptyState";
@@ -29,15 +31,16 @@ async function ProductGrid({ searchParams }: { searchParams: SearchParams }) {
 				const defaultImage = product.images?.[0]?.url;
 
 				return (
-					<Card
-						key={product.id}
-						id={product.id}
-						title={product.name}
-						category={product.category}
-						priceMin={parseFloat(`${product.priceMin}`)}
-						priceMax={parseFloat(`${product.priceMax}`)}
-						image={defaultImage ?? "/placeholder.png"}
-					/>
+					<Link key={product.id} href={`/products/${product.slug}/${product.images?.[0]?.sku}`}>
+						<Card
+							key={product.id}
+							title={product.name}
+							category={product.category}
+							priceMin={parseFloat(`${product.priceMin}`)}
+							priceMax={parseFloat(`${product.priceMax}`)}
+							image={defaultImage ?? "/placeholder.png"}
+						/>
+					</Link>
 				);
 			})}
 		</div>

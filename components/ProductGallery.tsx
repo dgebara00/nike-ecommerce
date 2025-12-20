@@ -25,28 +25,31 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 	const hasMultipleImages = images.length > 1;
 
 	const handlePrevious = useCallback(() => {
-		setSelectedIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+		setSelectedIndex(prev => (prev === 0 ? images.length - 1 : prev - 1));
 	}, [images.length]);
 
 	const handleNext = useCallback(() => {
-		setSelectedIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+		setSelectedIndex(prev => (prev === images.length - 1 ? 0 : prev + 1));
 	}, [images.length]);
 
 	const handleThumbnailClick = useCallback((index: number) => {
 		setSelectedIndex(index);
 	}, []);
 
-	const handleDotClick = useCallback((index: number) => {
-		setSelectedIndex(index);
-		if (scrollContainerRef.current) {
-			const container = scrollContainerRef.current;
-			const scrollWidth = container.scrollWidth / images.length;
-			container.scrollTo({ left: scrollWidth * index, behavior: "smooth" });
-		}
-	}, [images.length]);
+	const handleDotClick = useCallback(
+		(index: number) => {
+			setSelectedIndex(index);
+			if (scrollContainerRef.current) {
+				const container = scrollContainerRef.current;
+				const scrollWidth = container.scrollWidth / images.length;
+				container.scrollTo({ left: scrollWidth * index, behavior: "smooth" });
+			}
+		},
+		[images.length]
+	);
 
 	const handleImageError = useCallback((imageId: string) => {
-		setImageErrors((prev) => new Set(prev).add(imageId));
+		setImageErrors(prev => new Set(prev).add(imageId));
 	}, []);
 
 	const handleKeyDown = useCallback(
@@ -101,7 +104,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 
 	if (images.length === 0) {
 		return (
-			<div className="flex aspect-[4/5] items-center justify-center bg-light-200 rounded-lg">
+			<div className="flex aspect-4/5 items-center justify-center bg-light-200 rounded-lg">
 				<ImageOff className="h-16 w-16 text-dark-500" aria-hidden="true" />
 				<span className="sr-only">No images available</span>
 			</div>
@@ -113,7 +116,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 			{/* Desktop thumbnails - hidden on mobile */}
 			{hasMultipleImages && (
 				<div
-					className="hidden lg:flex order-2 lg:order-1 lg:flex-col gap-2 lg:overflow-y-auto lg:max-h-[700px]"
+					className="hidden lg:flex order-2 lg:order-1 lg:flex-col gap-2 lg:overflow-y-auto lg:max-h-175 sticky top-16"
 					role="tablist"
 					aria-label="Product image thumbnails"
 				>
@@ -124,7 +127,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 						return (
 							<button
 								key={image.id}
-								ref={(el) => {
+								ref={el => {
 									thumbnailRefs.current[index] = el;
 								}}
 								type="button"
@@ -135,7 +138,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 								tabIndex={isSelected ? 0 : -1}
 								onClick={() => handleThumbnailClick(index)}
 								onKeyDown={handleKeyDown}
-								className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2 ${
+								className={`relative shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2 ${
 									isSelected ? "border-dark-900" : "border-transparent hover:border-dark-500"
 								}`}
 							>
@@ -183,11 +186,8 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 						{images.map((image, index) => {
 							const hasImgError = imageErrors.has(image.id);
 							return (
-								<div
-									key={image.id}
-									className="relative flex-shrink-0 w-full snap-center"
-								>
-									<div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-light-200">
+								<div key={image.id} className="relative shrink-0 w-full snap-center">
+									<div className="relative aspect-4/5 overflow-hidden rounded-lg bg-light-200">
 										{badge && index === 0 && (
 											<span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-light-100 px-3 py-1.5 text-caption font-caption text-dark-900 shadow-sm">
 												<Star className="h-4 w-4 fill-current" aria-hidden="true" />
@@ -228,9 +228,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 									aria-label={`Go to image ${index + 1}`}
 									onClick={() => handleDotClick(index)}
 									className={`w-2 h-2 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2 ${
-										index === selectedIndex
-											? "bg-dark-900"
-											: "bg-dark-500 hover:bg-dark-700"
+										index === selectedIndex ? "bg-dark-900" : "bg-dark-500 hover:bg-dark-700"
 									}`}
 								/>
 							))}
@@ -239,7 +237,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 				</div>
 
 				{/* Desktop: Single image with navigation */}
-				<div className="hidden lg:block">
+				<div className="hidden lg:block sticky top-16">
 					<div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-light-200">
 						{badge && (
 							<span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-light-100 px-3 py-1.5 text-caption font-caption text-dark-900 shadow-sm">

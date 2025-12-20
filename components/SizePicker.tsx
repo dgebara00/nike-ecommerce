@@ -38,10 +38,10 @@ export function SizePicker({ sizes, onSizeSelect }: SizePickerProps) {
 			</div>
 
 			<div
-				className="grid grid-cols-5 gap-2"
-				role="radiogroup"
-				aria-label="Select shoe size"
-			>
+					className="grid grid-cols-3 gap-2"
+					role="radiogroup"
+					aria-label="Select shoe size"
+				>
 				{sizes.map((size) => {
 					const isSelected = selectedSize === size.id;
 					const isDisabled = !size.inStock;

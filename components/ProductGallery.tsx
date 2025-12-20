@@ -20,6 +20,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 	const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 	const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
 	const mainImageRef = useRef<HTMLDivElement>(null);
+	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 	const hasMultipleImages = images.length > 1;
 
@@ -34,6 +35,15 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 	const handleThumbnailClick = useCallback((index: number) => {
 		setSelectedIndex(index);
 	}, []);
+
+	const handleDotClick = useCallback((index: number) => {
+		setSelectedIndex(index);
+		if (scrollContainerRef.current) {
+			const container = scrollContainerRef.current;
+			const scrollWidth = container.scrollWidth / images.length;
+			container.scrollTo({ left: scrollWidth * index, behavior: "smooth" });
+		}
+	}, [images.length]);
 
 	const handleImageError = useCallback((imageId: string) => {
 		setImageErrors((prev) => new Set(prev).add(imageId));
@@ -71,6 +81,17 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 		[handlePrevious, handleNext, images.length]
 	);
 
+	const handleScroll = useCallback(() => {
+		if (scrollContainerRef.current) {
+			const container = scrollContainerRef.current;
+			const scrollWidth = container.scrollWidth / images.length;
+			const newIndex = Math.round(container.scrollLeft / scrollWidth);
+			if (newIndex !== selectedIndex && newIndex >= 0 && newIndex < images.length) {
+				setSelectedIndex(newIndex);
+			}
+		}
+	}, [images.length, selectedIndex]);
+
 	useEffect(() => {
 		thumbnailRefs.current[selectedIndex]?.focus();
 	}, [selectedIndex]);
@@ -80,7 +101,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 
 	if (images.length === 0) {
 		return (
-			<div className="flex aspect-square items-center justify-center bg-light-200 rounded-lg">
+			<div className="flex aspect-[4/5] items-center justify-center bg-light-200 rounded-lg">
 				<ImageOff className="h-16 w-16 text-dark-500" aria-hidden="true" />
 				<span className="sr-only">No images available</span>
 			</div>
@@ -89,9 +110,10 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 
 	return (
 		<div className="flex flex-col gap-4 lg:flex-row lg:gap-4">
+			{/* Desktop thumbnails - hidden on mobile */}
 			{hasMultipleImages && (
 				<div
-					className="order-2 flex gap-2 overflow-x-auto lg:order-1 lg:flex-col lg:overflow-x-visible lg:overflow-y-auto lg:max-h-[600px]"
+					className="hidden lg:flex order-2 lg:order-1 lg:flex-col gap-2 lg:overflow-y-auto lg:max-h-[700px]"
 					role="tablist"
 					aria-label="Product image thumbnails"
 				>
@@ -113,7 +135,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 								tabIndex={isSelected ? 0 : -1}
 								onClick={() => handleThumbnailClick(index)}
 								onKeyDown={handleKeyDown}
-								className={`relative flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-lg overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2 ${
+								className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2 ${
 									isSelected ? "border-dark-900" : "border-transparent hover:border-dark-500"
 								}`}
 							>
@@ -137,6 +159,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 				</div>
 			)}
 
+			{/* Main image area */}
 			<div
 				ref={mainImageRef}
 				id="main-product-image"
@@ -144,53 +167,127 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 				aria-label={currentImage?.alt || "Product image"}
 				className={`relative order-1 flex-1 lg:order-2 ${hasMultipleImages ? "" : "w-full"}`}
 			>
-				<div className="relative aspect-square overflow-hidden rounded-lg bg-light-200">
-					{badge && (
-						<span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-light-100 px-3 py-1.5 text-caption font-caption text-dark-900 shadow-sm">
-							<Star className="h-4 w-4 fill-current" aria-hidden="true" />
-							{badge}
-						</span>
-					)}
+				{/* Mobile: Scrollable gallery with dots */}
+				<div className="lg:hidden">
+					<div
+						ref={scrollContainerRef}
+						className="flex snap-x snap-mandatory overflow-x-auto"
+						onScroll={handleScroll}
+						style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+					>
+						<style jsx>{`
+							div::-webkit-scrollbar {
+								display: none;
+							}
+						`}</style>
+						{images.map((image, index) => {
+							const hasImgError = imageErrors.has(image.id);
+							return (
+								<div
+									key={image.id}
+									className="relative flex-shrink-0 w-full snap-center"
+								>
+									<div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-light-200">
+										{badge && index === 0 && (
+											<span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-light-100 px-3 py-1.5 text-caption font-caption text-dark-900 shadow-sm">
+												<Star className="h-4 w-4 fill-current" aria-hidden="true" />
+												{badge}
+											</span>
+										)}
+										{hasImgError ? (
+											<div className="flex h-full w-full items-center justify-center">
+												<ImageOff className="h-16 w-16 text-dark-500" aria-hidden="true" />
+												<span className="sr-only">Image failed to load</span>
+											</div>
+										) : (
+											<Image
+												src={image.url}
+												alt={image.alt}
+												fill
+												sizes="100vw"
+												className="object-cover"
+												priority={index === 0}
+												onError={() => handleImageError(image.id)}
+											/>
+										)}
+									</div>
+								</div>
+							);
+						})}
+					</div>
 
-					{hasError ? (
-						<div className="flex h-full w-full items-center justify-center">
-							<ImageOff className="h-16 w-16 text-dark-500" aria-hidden="true" />
-							<span className="sr-only">Image failed to load</span>
-						</div>
-					) : (
-						currentImage && (
-							<Image
-								src={currentImage.url}
-								alt={currentImage.alt}
-								fill
-								sizes="(max-width: 1024px) 100vw, 50vw"
-								className="object-cover"
-								priority
-								onError={() => handleImageError(currentImage.id)}
-							/>
-						)
-					)}
-
+					{/* Dots indicator for mobile */}
 					{hasMultipleImages && (
-						<div className="absolute bottom-4 right-4 z-10 flex gap-2">
-							<button
-								type="button"
-								onClick={handlePrevious}
-								aria-label="Previous image"
-								className="flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
-							>
-								<ChevronLeft className="h-5 w-5 text-dark-900" aria-hidden="true" />
-							</button>
-							<button
-								type="button"
-								onClick={handleNext}
-								aria-label="Next image"
-								className="flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
-							>
-								<ChevronRight className="h-5 w-5 text-dark-900" aria-hidden="true" />
-							</button>
+						<div className="flex justify-center gap-2 mt-4" role="tablist" aria-label="Image navigation dots">
+							{images.map((_, index) => (
+								<button
+									key={index}
+									type="button"
+									role="tab"
+									aria-selected={index === selectedIndex}
+									aria-label={`Go to image ${index + 1}`}
+									onClick={() => handleDotClick(index)}
+									className={`w-2 h-2 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2 ${
+										index === selectedIndex
+											? "bg-dark-900"
+											: "bg-dark-500 hover:bg-dark-700"
+									}`}
+								/>
+							))}
 						</div>
 					)}
+				</div>
+
+				{/* Desktop: Single image with navigation */}
+				<div className="hidden lg:block">
+					<div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-light-200">
+						{badge && (
+							<span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-light-100 px-3 py-1.5 text-caption font-caption text-dark-900 shadow-sm">
+								<Star className="h-4 w-4 fill-current" aria-hidden="true" />
+								{badge}
+							</span>
+						)}
+
+						{hasError ? (
+							<div className="flex h-full w-full items-center justify-center">
+								<ImageOff className="h-16 w-16 text-dark-500" aria-hidden="true" />
+								<span className="sr-only">Image failed to load</span>
+							</div>
+						) : (
+							currentImage && (
+								<Image
+									src={currentImage.url}
+									alt={currentImage.alt}
+									fill
+									sizes="50vw"
+									className="object-cover"
+									priority
+									onError={() => handleImageError(currentImage.id)}
+								/>
+							)
+						)}
+
+						{hasMultipleImages && (
+							<div className="absolute bottom-4 right-4 z-10 flex gap-2">
+								<button
+									type="button"
+									onClick={handlePrevious}
+									aria-label="Previous image"
+									className="flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
+								>
+									<ChevronLeft className="h-5 w-5 text-dark-900" aria-hidden="true" />
+								</button>
+								<button
+									type="button"
+									onClick={handleNext}
+									aria-label="Next image"
+									className="flex h-10 w-10 items-center justify-center rounded-full bg-light-100 shadow-md transition-colors hover:bg-light-200 focus:outline-none focus:ring-2 focus:ring-dark-900 focus:ring-offset-2"
+								>
+									<ChevronRight className="h-5 w-5 text-dark-900" aria-hidden="true" />
+								</button>
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

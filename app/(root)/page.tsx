@@ -10,6 +10,8 @@ type Props = {
 	searchParams: Promise<SearchParams>;
 };
 
+export const revalidate = 3600; // Revalidate every hour
+
 export default async function Home({ searchParams }: Props) {
 	const [resolvedSearchParams, filterOptions, allProducts] = await Promise.all([
 		searchParams,

@@ -80,23 +80,28 @@ export async function getProducts(filters?: ProductFilters): Promise<{ total: nu
 export async function getProduct(slug: string): Promise<Omit<Product, "priceMin" | "priceMax"> | null> {
 	const productVariantsJoin = buildProductVariantsJoin();
 
-	const product = await db
-		.select({
-			id: products.id,
-			slug: products.slug,
-			name: products.name,
-			description: products.description,
-			createdAt: products.createdAt,
-			defaultVariantId: products.defaultVariantId,
-			gender: genders.label,
-			category: categories.name,
-			variants: productVariantsJoin.variants,
-		})
-		.from(products)
-		.innerJoin(productVariantsJoin, eq(products.id, productVariantsJoin.productId))
-		.leftJoin(categories, eq(products.categoryId, categories.id))
-		.leftJoin(genders, eq(products.genderId, genders.id))
-		.where(eq(products.slug, slug));
+	try {
+		const product = await db
+			.select({
+				id: products.id,
+				slug: products.slug,
+				name: products.name,
+				description: products.description,
+				createdAt: products.createdAt,
+				defaultVariantId: products.defaultVariantId,
+				gender: genders.label,
+				category: categories.name,
+				variants: productVariantsJoin.variants,
+			})
+			.from(products)
+			.innerJoin(productVariantsJoin, eq(products.id, productVariantsJoin.productId))
+			.leftJoin(categories, eq(products.categoryId, categories.id))
+			.leftJoin(genders, eq(products.genderId, genders.id))
+			.where(eq(products.slug, slug));
 
-	return product?.[0] ?? null;
+		return product?.[0] ?? null;
+	} catch (error) {
+		console.error("Failed to fetch product", error);
+		return null;
+	}
 }

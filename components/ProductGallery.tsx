@@ -4,14 +4,10 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ImageOff, Star } from "lucide-react";
 
-export interface GalleryImage {
-	id: string;
-	url: string;
-	alt: string;
-}
+import type { Image as VariantImage } from "@/lib/products/types";
 
 interface ProductGalleryProps {
-	images: GalleryImage[];
+	images: VariantImage[];
 	badge?: string;
 }
 
@@ -134,7 +130,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 								role="tab"
 								aria-selected={isSelected}
 								aria-controls="main-product-image"
-								aria-label={`View ${image.alt}, image ${index + 1} of ${images.length}`}
+								aria-label={`View product image, image ${index + 1} of ${images.length}`}
 								tabIndex={isSelected ? 0 : -1}
 								onClick={() => handleThumbnailClick(index)}
 								onKeyDown={handleKeyDown}
@@ -167,7 +163,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 				ref={mainImageRef}
 				id="main-product-image"
 				role="tabpanel"
-				aria-label={currentImage?.alt || "Product image"}
+				aria-label="Product image"
 				className={`relative order-1 flex-1 lg:order-2 ${hasMultipleImages ? "" : "w-full"}`}
 			>
 				{/* Mobile: Scrollable gallery with dots */}
@@ -202,7 +198,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 										) : (
 											<Image
 												src={image.url}
-												alt={image.alt}
+												alt="Product image"
 												fill
 												sizes="100vw"
 												className="object-cover"
@@ -238,7 +234,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 
 				{/* Desktop: Single image with navigation */}
 				<div className="hidden lg:block sticky top-16">
-					<div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-light-200">
+					<div className="relative aspect-4/5 overflow-hidden rounded-lg bg-light-200">
 						{badge && (
 							<span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-light-100 px-3 py-1.5 text-caption font-caption text-dark-900 shadow-sm">
 								<Star className="h-4 w-4 fill-current" aria-hidden="true" />
@@ -255,7 +251,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 							currentImage && (
 								<Image
 									src={currentImage.url}
-									alt={currentImage.alt}
+									alt="Product image"
 									fill
 									sizes="50vw"
 									className="object-cover"

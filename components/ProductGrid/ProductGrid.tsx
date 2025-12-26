@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-import { getProducts } from "@/lib/products";
 import Card from "../Card";
 import EmptyState from "./EmptyState";
+import { getProducts } from "@/lib/products";
 
 export interface SearchParams {
 	gender?: string;
@@ -28,10 +28,11 @@ async function ProductGrid({ searchParams }: { searchParams: SearchParams }) {
 	return (
 		<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{products.map(product => {
-				const defaultImage = product.images?.[0]?.url;
+				const defaultVariant = product.variants.find(v => v.id === product.defaultVariantId) ?? product.variants[0];
+				const defaultImage = defaultVariant?.images?.[0]?.url; // first image is always the primary one due to ordering;
 
 				return (
-					<Link key={product.id} href={`/products/${product.slug}/${product.images?.[0]?.sku}`}>
+					<Link key={product.id} href={`/products/${product.slug}/${defaultVariant.sku}`}>
 						<Card
 							key={product.id}
 							title={product.name}

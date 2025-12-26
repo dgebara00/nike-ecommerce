@@ -3,22 +3,20 @@
 import { useState } from "react";
 import { Ruler } from "lucide-react";
 
-export interface SizeOption {
-	id: string;
-	name: string;
-	inStock: boolean;
-}
+import type { VariantSize } from "@/lib/products/types";
 
 interface SizePickerProps {
-	sizes: SizeOption[];
-	onSizeSelect?: (size: SizeOption) => void;
+	sizes: VariantSize[];
+	defaultSizeId?: string;
+	onSizeSelect?: (size: VariantSize) => void;
 }
 
-export function SizePicker({ sizes, onSizeSelect }: SizePickerProps) {
-	const [selectedSize, setSelectedSize] = useState<string | null>(null);
+export function SizePicker({ sizes, defaultSizeId, onSizeSelect }: SizePickerProps) {
+	const [selectedSize, setSelectedSize] = useState<string | null>(defaultSizeId ?? null);
 
-	const handleSizeClick = (size: SizeOption) => {
+	const handleSizeClick = (size: VariantSize) => {
 		if (!size.inStock) return;
+
 		setSelectedSize(size.id);
 		onSizeSelect?.(size);
 	};
@@ -40,7 +38,7 @@ export function SizePicker({ sizes, onSizeSelect }: SizePickerProps) {
 			<div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Select shoe size">
 				{sizes.map(size => {
 					const isSelected = selectedSize === size.id;
-					const isDisabled = !size.inStock;
+					const isDisabled = size.inStock === 0;
 
 					return (
 						<button
@@ -49,7 +47,7 @@ export function SizePicker({ sizes, onSizeSelect }: SizePickerProps) {
 							role="radio"
 							aria-checked={isSelected}
 							aria-disabled={isDisabled}
-							aria-label={`Size ${size.name}${isDisabled ? ", out of stock" : ""}${isSelected ? ", selected" : ""}`}
+							aria-label={`Size ${size.size}${isDisabled ? ", out of stock" : ""}${isSelected ? ", selected" : ""}`}
 							disabled={isDisabled}
 							onClick={() => handleSizeClick(size)}
 							className={`cursor-${isDisabled ? "not-allowed" : "pointer"} flex h-12 items-center justify-center rounded-md border text-body transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-900 focus-visible:ring-offset-2 ${
@@ -60,7 +58,7 @@ export function SizePicker({ sizes, onSizeSelect }: SizePickerProps) {
 										: "border-light-300 bg-light-100 text-dark-900 hover:border-dark-700"
 							}`}
 						>
-							{size.name}
+							{size.size}
 						</button>
 					);
 				})}

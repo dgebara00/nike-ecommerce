@@ -8,6 +8,9 @@ import * as schema from "@/db/schema";
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 const authSecret = process.env.BETTER_AUTH_SECRET ?? "dev-secret";
 
+const AUTH_COOKIE_PREFIX = "nike";
+export const AUTH_SESSION_COOKIE = "session_token";
+
 export const auth = betterAuth({
 	appName: "Nike Commerce Cloud",
 	baseURL: appUrl,
@@ -26,13 +29,13 @@ export const auth = betterAuth({
 		},
 	},
 	advanced: {
-		cookiePrefix: "nike",
+		cookiePrefix: AUTH_COOKIE_PREFIX,
 		database: {
 			generateId: "uuid",
 		},
 		cookies: {
 			session_token: {
-				name: "auth_session",
+				name: AUTH_SESSION_COOKIE,
 				options: {
 					httpOnly: true,
 					secure: process.env.NODE_ENV === "production",

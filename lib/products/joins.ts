@@ -1,9 +1,8 @@
 import { db } from "@/db";
-import { eq, SQL, inArray, ilike, or, and, lte, gte, sql, gt } from "drizzle-orm";
+import { eq, SQL, and, sql } from "drizzle-orm";
 
 import { productVariants, productImages, productVariantSizes, sizes, colors } from "@/db/schema";
 import type { Variant, VariantSize, Image } from "./types";
-import { parsePriceRange } from "./utils";
 
 export const buildVariantSizesJoin = (conditions?: SQL[]) =>
 	db

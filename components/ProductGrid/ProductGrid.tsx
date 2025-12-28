@@ -4,19 +4,21 @@ import Card from "../Card";
 import EmptyState from "./EmptyState";
 import { getProducts } from "@/lib/products";
 
-export interface SearchParams {
+export type SearchParams = {
 	gender?: string;
 	category?: string;
 	price?: string;
 	sort?: string;
-}
+};
 
-async function ProductGrid({ searchParams }: { searchParams: SearchParams }) {
+async function ProductGrid({ searchParams }: { searchParams: Promise<SearchParams> }) {
+	const resolvedSearchParams = await searchParams;
+
 	const filters = {
-		gender: searchParams.gender?.split(",").filter(Boolean),
-		category: searchParams.category?.split(",").filter(Boolean),
-		price: searchParams.price?.split(",").filter(Boolean),
-		sort: searchParams.sort,
+		gender: resolvedSearchParams.gender?.split(",").filter(Boolean) ?? [],
+		category: resolvedSearchParams.category?.split(",").filter(Boolean) ?? [],
+		price: resolvedSearchParams.price?.split(",").filter(Boolean) ?? [],
+		sort: resolvedSearchParams.sort,
 	};
 
 	const { products, total } = await getProducts(filters);

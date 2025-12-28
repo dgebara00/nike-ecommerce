@@ -10,14 +10,8 @@ type Props = {
 	searchParams: Promise<SearchParams>;
 };
 
-export const revalidate = 3600; // Revalidate every hour
-
 export default async function Home({ searchParams }: Props) {
-	const [resolvedSearchParams, filterOptions, allProducts] = await Promise.all([
-		searchParams,
-		getAllFilterOptions(),
-		getProducts(),
-	]);
+	const [filterOptions, allProducts] = await Promise.all([getAllFilterOptions(), getProducts()]);
 
 	const filters = [
 		{
@@ -70,7 +64,7 @@ export default async function Home({ searchParams }: Props) {
 						</div>
 
 						<Suspense fallback={<ProductsLoading />}>
-							<ProductGrid searchParams={resolvedSearchParams} />
+							<ProductGrid searchParams={searchParams} />
 						</Suspense>
 					</div>
 				</div>

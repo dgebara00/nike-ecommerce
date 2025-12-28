@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { Heart, Star } from "lucide-react";
 
@@ -11,15 +12,24 @@ import { mockRelatedProducts, mockShipping, mockReviews } from "@/lib/mock-produ
 import { getProduct } from "@/lib/products";
 import { isValidSku, getDefaultSku } from "@/lib/products/utils";
 import type { VariantSize, Image as VariantImage } from "@/lib/products/types";
+import ProductPageSkeleton from "@/components/ProductPageSkeleton";
 
-interface ProductPageProps {
+type Props = {
 	params: Promise<{
 		slug: string;
 		sku: string;
 	}>;
+};
+
+export default function ProductPage(props: Props) {
+	return (
+		<Suspense fallback={<ProductPageSkeleton />}>
+			<ProductPageContent {...props} />
+		</Suspense>
+	);
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
+async function ProductPageContent({ params }: Props) {
 	const { slug, sku } = await params;
 	const product = await getProduct(slug);
 

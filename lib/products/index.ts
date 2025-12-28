@@ -1,5 +1,8 @@
+"use cache";
+
 import { db } from "@/db";
 import { eq, SQL, inArray, ilike, or, and, lte, gte, gt } from "drizzle-orm";
+import { cacheLife, cacheTag } from "next/cache";
 
 import { genders, products, categories, productVariantSizes } from "@/db/schema";
 import type { ProductFilters, Product } from "./types";
@@ -7,6 +10,9 @@ import { parsePriceRange, getOrderBy } from "./utils";
 import { buildProductVariantsJoin } from "./joins";
 
 export async function getProducts(filters?: ProductFilters): Promise<{ total: number; products: Product[] }> {
+	cacheLife("hours");
+	cacheTag("products");
+
 	const baseCondition: SQL[] = [eq(products.isPublished, true)];
 
 	if (filters?.search) {
@@ -78,6 +84,9 @@ export async function getProducts(filters?: ProductFilters): Promise<{ total: nu
 }
 
 export async function getProduct(slug: string): Promise<Omit<Product, "priceMin" | "priceMax"> | null> {
+	cacheLife("hours");
+	cacheTag("products");
+
 	const productVariantsJoin = buildProductVariantsJoin();
 
 	try {

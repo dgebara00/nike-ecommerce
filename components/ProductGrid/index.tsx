@@ -1,4 +1,3 @@
-export { default } from "./ProductGrid";
+export { default, ProductGrid } from "./FilteredProductGrid";
 export { default as EmptyState } from "./EmptyState";
-export { default as ProductsLoading } from "./ProductsLoading";
-export type { SearchParams } from "./ProductGrid";
+export type { SearchParams } from "./FilteredProductGrid";

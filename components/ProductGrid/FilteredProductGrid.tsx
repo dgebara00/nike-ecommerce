@@ -3,6 +3,7 @@ import Link from "next/link";
 import Card from "../Card";
 import EmptyState from "./EmptyState";
 import { getProducts } from "@/lib/products";
+import { Product } from "@/lib/products/types";
 
 export type SearchParams = {
 	gender?: string;
@@ -11,18 +12,7 @@ export type SearchParams = {
 	sort?: string;
 };
 
-async function ProductGrid({ searchParams }: { searchParams: Promise<SearchParams> }) {
-	const resolvedSearchParams = await searchParams;
-
-	const filters = {
-		gender: resolvedSearchParams.gender?.split(",").filter(Boolean) ?? [],
-		category: resolvedSearchParams.category?.split(",").filter(Boolean) ?? [],
-		price: resolvedSearchParams.price?.split(",").filter(Boolean) ?? [],
-		sort: resolvedSearchParams.sort,
-	};
-
-	const { products, total } = await getProducts(filters);
-
+export const ProductGrid = ({ total, products }: { total: number; products: Product[] }) => {
 	if (total === 0) {
 		return <EmptyState />;
 	}
@@ -48,6 +38,21 @@ async function ProductGrid({ searchParams }: { searchParams: Promise<SearchParam
 			})}
 		</div>
 	);
+};
+
+async function FilteredProductGrid({ searchParams }: { searchParams: Promise<SearchParams> }) {
+	const resolvedSearchParams = await searchParams;
+
+	const filters = {
+		gender: resolvedSearchParams.gender?.split(",").filter(Boolean) ?? [],
+		category: resolvedSearchParams.category?.split(",").filter(Boolean) ?? [],
+		price: resolvedSearchParams.price?.split(",").filter(Boolean) ?? [],
+		sort: resolvedSearchParams.sort,
+	};
+
+	const { products, total } = await getProducts(filters);
+
+	return <ProductGrid total={total} products={products} />;
 }
 
-export default ProductGrid;
+export default FilteredProductGrid;

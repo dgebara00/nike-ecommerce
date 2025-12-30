@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import ProductGrid, { type SearchParams, ProductsLoading } from "@/components/ProductGrid";
+import FilteredProductGrid, { type SearchParams, ProductGrid } from "@/components/ProductGrid";
 import { getProducts } from "@/lib/products";
 import { getAllFilterOptions } from "@/lib/filters";
 import FilterGroup from "@/components/FilterGroup";
@@ -51,20 +51,20 @@ export default async function Home({ searchParams }: Props) {
 
 				<div className="flex gap-8">
 					<div className="hidden lg:block">
-						<Suspense fallback={null}>
+						<Suspense>
 							<FilterGroup filters={filters} totalProducts={allProducts.total} />
 						</Suspense>
 					</div>
 
 					<div className="flex-1">
 						<div className="mb-6 hidden items-center justify-end lg:flex">
-							<Suspense fallback={null}>
+							<Suspense>
 								<Sort />
 							</Suspense>
 						</div>
 
-						<Suspense fallback={<ProductsLoading />}>
-							<ProductGrid searchParams={searchParams} />
+						<Suspense fallback={<ProductGrid {...allProducts} />}>
+							<FilteredProductGrid searchParams={searchParams} />
 						</Suspense>
 					</div>
 				</div>

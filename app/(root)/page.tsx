@@ -3,8 +3,8 @@ import { Suspense } from "react";
 import FilteredProductGrid, { type SearchParams, ProductGrid } from "@/components/ProductGrid";
 import { getProducts } from "@/lib/products";
 import { getAllFilterOptions } from "@/lib/filters";
-import FilterGroup from "@/components/FilterGroup";
-import Sort from "@/components/Sort";
+import FilterGroup, { FilterGroupSkeleton } from "@/components/FilterGroup";
+import Sort, { SortSkeleton } from "@/components/Sort";
 
 type Props = {
 	searchParams: Promise<SearchParams>;
@@ -40,10 +40,10 @@ export default async function Home({ searchParams }: Props) {
 				<div className="mb-6 flex items-center justify-between lg:hidden">
 					<h1 className="text-heading-3 font-heading-3 text-dark-900">New ({allProducts.total})</h1>
 					<div className="flex items-center gap-4">
-						<Suspense fallback={null}>
+						<Suspense fallback={<FilterGroupSkeleton />}>
 							<FilterGroup filters={filters} totalProducts={allProducts.total} />
 						</Suspense>
-						<Suspense fallback={null}>
+						<Suspense fallback={<SortSkeleton />}>
 							<Sort />
 						</Suspense>
 					</div>
@@ -51,14 +51,14 @@ export default async function Home({ searchParams }: Props) {
 
 				<div className="flex gap-8">
 					<div className="hidden lg:block">
-						<Suspense>
+						<Suspense fallback={<FilterGroupSkeleton />}>
 							<FilterGroup filters={filters} totalProducts={allProducts.total} />
 						</Suspense>
 					</div>
 
 					<div className="flex-1">
 						<div className="mb-6 hidden items-center justify-end lg:flex">
-							<Suspense>
+							<Suspense fallback={<SortSkeleton />}>
 								<Sort />
 							</Suspense>
 						</div>

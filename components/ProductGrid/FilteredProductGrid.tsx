@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import Card from "../Card";
-import EmptyState from "./EmptyState";
+import EmptyProductGrid from "./EmptyProductGrid";
 import { getProducts } from "@/lib/products";
 import { Product } from "@/lib/products/types";
 
@@ -14,7 +14,7 @@ export type SearchParams = {
 
 export const ProductGrid = ({ total, products }: { total: number; products: Product[] }) => {
 	if (total === 0) {
-		return <EmptyState />;
+		return <EmptyProductGrid />;
 	}
 
 	return (

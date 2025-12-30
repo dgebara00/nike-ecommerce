@@ -4,6 +4,10 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 
+export function SortSkeleton() {
+	return <div className="h-8 w-24 animate-pulse rounded bg-light-300" />;
+}
+
 export interface SortOption {
 	value: string;
 	label: string;

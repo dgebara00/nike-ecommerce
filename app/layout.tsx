@@ -4,23 +4,24 @@ import { Jost } from "next/font/google";
 import "./globals.css";
 
 const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
+	variable: "--font-jost",
+	subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Nike Commerce Cloud",
-  description: "Next.js storefront seeded with Nike inventory, Drizzle ORM, and Better Auth.",
+	title: "Nike Commerce Cloud",
+	description: "Next.js storefront seeded with Nike inventory, Drizzle ORM, and Better Auth.",
+	keywords: ["Nike", "Ecommerce", "Storefront", "Next.js", "Drizzle ORM", "Better Auth"],
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={`${jost.className} antialiased`}>{children}</body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body className={`${jost.className} antialiased`}>{children}</body>
+		</html>
+	);
 }

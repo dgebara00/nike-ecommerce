@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Heart, Star } from "lucide-react";
 
@@ -11,7 +12,7 @@ import RelatedProducts from "@/components/RelatedProducts";
 import { mockRelatedProducts, mockShipping, mockReviews } from "@/lib/mock-product-data";
 import { getProduct } from "@/lib/products";
 import { isValidSku, getDefaultSku } from "@/lib/products/utils";
-import type { VariantSize, Image as VariantImage } from "@/lib/products/types";
+import type { VariantSize, Image as VariantImage, Variant } from "@/lib/products/types";
 import ProductPageSkeleton from "@/components/ProductPageSkeleton";
 
 type Props = {
@@ -159,4 +160,35 @@ async function ProductPageContent({ params }: Props) {
 			</div>
 		</main>
 	);
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	"use cache";
+
+	const resolvedPararent = await params;
+	const { slug, sku } = resolvedPararent;
+
+	const product = await getProduct(slug);
+
+	if (!product || !isValidSku(product, sku)) {
+		return {};
+	}
+
+	const currentVariant = product.variants.find(variant => variant.sku === sku) as Variant;
+	const availableSizes = currentVariant.sizes.filter(size => size.inStock > 0);
+
+	const title = `${product.name} - ${currentVariant.color} (${availableSizes.map(size => size.size).join(", ")}) | Nike Store`;
+	const description = product.description;
+
+	return {
+		title,
+		description,
+		keywords: [
+			product.name,
+			product.category as string,
+			product.gender as string,
+			currentVariant.color,
+			...availableSizes.map(size => size.size),
+		],
+	};
 }
